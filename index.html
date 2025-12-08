@@ -94,10 +94,23 @@
         }
 
         .subtitle{
-            font-size:0.86rem;
+            font-size: 1rem;
             color:#4a4139;
-            margin-top:4px;
-            text-align:center;
+            margin-top: 15px;
+            margin-bottom: -20px; /* Adjusted slightly so it doesn't overlap the buttons too much */
+            
+            /* --- FLEXBOX TO ALIGN TEXT AND ARROW --- */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2px; /* Space between text and arrow */
+        }
+
+        .arrow-icon {
+            width: 23px; /* Control size of the arrow here */
+            height: auto;
+            /* Mix-blend-mode multiply helps if the jpg has a white background, making it transparent-ish on grey */
+            mix-blend-mode: multiply; 
         }
 
         .buttons{
@@ -204,17 +217,14 @@
         @media (max-width:600px){
             .card{
                 max-width:100%;
-                margin:0; /* Removes side margin to use full width if needed */
-                max-height: 95vh; /* Gives a bit more room on mobile */
+                margin:0; 
+                max-height: 95vh;
             }
             .btn, .btn-alt{
-                /* Shrink font size to keep text on one line */
                 font-size: 0.7rem; 
-                /* Reduce padding slightly to save width */
                 padding: 12px 10px; 
             }
             .btn-icon{
-                /* Shrink icon slightly to save width */
                 width: 32px; 
                 height: 32px;
             }
@@ -229,9 +239,12 @@
                 <img src="YukaAva.png" alt="Avatar">
             </div>
             <div class="name">Yuka</div>
+            
             <div class="subtitle">
-                Pick your poison below. 👇
+                <span>pick your poison below</span>
+                <img src="arrow-downwards.png" alt="arrow" class="arrow-icon">
             </div>
+
         </div>
 
         <div class="buttons">
