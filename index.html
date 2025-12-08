@@ -8,6 +8,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Asap+Condensed:wght@700&display=swap" rel="stylesheet">
 
     <style>
+
+        @font-face {
+            font-family: 'Cleanow';
+            src: url('Cleanow.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+        }
+
         *{margin:0;padding:0;box-sizing:border-box;}
         body{
             font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -68,7 +76,8 @@
             object-fit:cover;
         }
         .name {
-            font-family: 'Asap Condensed', sans-serif;
+            /* Ensures the name specifically uses the font and bold weight */
+            font-family: 'Cleanow', sans-serif;
             font-weight: 700;
             text-transform: lowercase;
             margin-top: 12px;
