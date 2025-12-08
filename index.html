@@ -6,7 +6,6 @@
     <title>My Private Server Links</title>
 
     <style>
-        /* --- 1. SETUP THE CUSTOM FONT --- */
         @font-face {
             font-family: 'Cleanow';
             src: url('Cleanow.ttf') format('truetype');
@@ -22,16 +21,15 @@
             color:#181818;
             min-height:100vh;
             
-            /* --- LAYOUT FIXES --- */
             display:flex;
             justify-content:center;
-            /* Changed from 'center' to 'flex-start' to prevent cutting off top content on small screens */
+            /* CHANGED: 'flex-start' prevents the top from being cut off on small laptops */
             align-items: flex-start; 
             padding:16px;
         }
 
         .card{
-            /* Centers the card vertically when there is space, pushes it down when there isn't */
+            /* This magically centers the card vertically when there is space */
             margin: auto; 
             
             position:relative;
@@ -39,7 +37,7 @@
             width:100%;
             max-width:520px;
             
-            /* --- MOBILE DEFAULT SETTINGS (Scrollable) --- */
+            /* --- MOBILE DEFAULTS (Scrollable) --- */
             max-height:90vh;
             overflow-y:auto; 
             overflow-x:hidden;
@@ -53,11 +51,13 @@
             flex-direction:column;
         }
 
-        /* --- DESKTOP ADJUSTMENT (No Scrollbar) --- */
+        /* --- NEW: DESKTOP MODE --- */
+        /* This runs only on screens wider than 768px (Tablets/Laptops/PCs) */
         @media (min-width: 768px) {
             .card {
-                /* On computer screens, let the card grow as tall as it needs */
+                /* Remove the height limit so the card grows to fit content */
                 max-height: none;
+                /* Remove the internal scrollbar */
                 overflow-y: visible;
             }
         }
@@ -66,7 +66,6 @@
             content:"";
             position:absolute;
             inset:0;
-            /* FIXED PATH: Removed the starting '/' */
             background:url("Images/sd_logo.png") center/140% no-repeat;
             opacity:0.30;
             filter:blur(2px);
@@ -236,22 +235,17 @@
                 height: 32px;
             }
         }
-
     </style>
 </head>
 <body>
     <div class="card">
         <div class="avatar-wrap">
-            <div class="avatar">
-                <img src="Images/YukaAva.png" alt="Avatar">
-            </div>
+            <img class="avatar" src="Images/YukaAva.png" alt="Avatar">
             <div class="name">Yuka</div>
-            
             <div class="subtitle">
                 <span>pick your poison below</span>
                 <img src="Images/arrow-downwards.png" alt="arrow" class="arrow-icon">
             </div>
-
         </div>
 
         <div class="buttons">
