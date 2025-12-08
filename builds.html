@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yuka's Builds</title>
+
+    <style>
+        /* --- CORE STYLES --- */
+        @font-face {
+            font-family: 'Cleanow';
+            src: url('Cleanow.ttf') format('truetype');
+        }
+        *{margin:0;padding:0;box-sizing:border-box;}
+
+        body{
+            font-family: 'Cleanow', sans-serif;
+            background:#f0e6dd;
+            color:#181818;
+            min-height:100vh;
+            display:flex;
+            justify-content:center;
+            align-items: flex-start;
+            padding:16px;
+        }
+
+        /* --- MAIN CARD --- */
+        .card {
+            margin: auto;
+            position: relative;
+            background: #ddd8d3;
+            width: 100%;
+            max-width: 600px;
+            
+            /* CHANGED: Removed 'min-height: 80vh' so it hugs the content tightly */
+            height: auto; 
+            
+            border-radius: 18px;
+            padding: 26px 22px 30px;
+            box-shadow: 0 18px 40px rgba(0,0,0,0.16);
+            border: 1px solid rgba(0,0,0,0.04);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card::before{
+            content:""; position:absolute; inset:0;
+            background:url("Images/sd_logo.png") center/140% no-repeat;
+            opacity:0.30; filter:blur(2px); z-index:0;
+            pointer-events: none;
+        }
+        .card > *{ position:relative; z-index:1; }
+
+        /* --- NAVIGATION --- */
+        .header-nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 25px;
+        }
+
+        .page-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-transform: lowercase;
+            text-align: right;
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            color: #181818;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            padding: 8px 14px;
+            border: 1px solid #181818;
+            border-radius: 99px;
+            background: transparent;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+        .back-btn:hover {
+            background: #181818;
+            color: #f5ece4;
+        }
+
+        /* --- GRID SYSTEM --- */
+        .builds-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        @media(min-width: 500px) {
+            .builds-grid { grid-template-columns: 1fr 1fr; }
+        }
+
+        /* --- CLICKABLE BUILD ITEMS --- */
+        .build-item {
+            background: rgba(255,255,255,0.5);
+            padding: 10px;
+            border-radius: 12px;
+            border: 1px solid rgba(0,0,0,0.05);
+            transition: transform 0.2s ease, background 0.2s ease;
+            cursor: pointer; /* Makes it look clickable */
+        }
+        .build-item:hover {
+            transform: translateY(-3px);
+            background: rgba(255,255,255,0.9);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .build-img-wrap {
+            width: 100%;
+            height: 150px;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #000;
+            margin-bottom: 10px;
+        }
+
+        .build-img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: top center;
+        }
+
+        .build-info h3 { font-size: 1.1rem; margin-bottom: 4px; pointer-events: none;}
+        .build-info p { font-size: 0.8rem; color: #4a4139; pointer-events: none;}
+
+        /* --- MODAL STYLES (The Popup) --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); /* Darkens background */
+            backdrop-filter: blur(5px);   /* Blurs background */
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            
+            /* Hidden state */
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal-card {
+            background: #f0e6dd;
+            width: 90%;
+            max-width: 450px;
+            border-radius: 20px;
+            padding: 20px;
+            position: relative;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            
+            /* Animation for pop-up effect */
+            transform: translateY(30px) scale(0.95);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .modal-overlay.active .modal-card {
+            transform: translateY(0) scale(1);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 2rem;
+            line-height: 1;
+            cursor: pointer;
+            color: #181818;
+            z-index: 2;
+        }
+
+        .modal-img-wrap {
+            width: 100%;
+            height: 250px; /* Taller image for details */
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 15px;
+            background: #000;
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .modal-img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: top center;
+        }
+
+        .modal-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            font-family: 'Cleanow', sans-serif;
+        }
+
+        .modal-desc {
+            font-size: 1rem;
+            color: #4a4139;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        /* Optional 'Copy Code' style button for the modal */
+        .action-btn {
+            background: #181818;
+            color: #fff;
+            padding: 12px;
+            border-radius: 8px;
+            text-align: center;
+            text-decoration: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .action-btn:hover { opacity: 0.8; }
+
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        
+        <div class="header-nav">
+            <a href="index.html" class="back-btn">← Back</a>
+            <div class="page-title">my vd builds</div>
+        </div>
+
+        <div class="builds-grid">
+
+            <div class="build-item" onclick="openModal('The Killer', 'Images/TheKiller.png', 'My go-to aggressive build. Focuses on high burst damage and speed. Perfect for quick takedowns.')">
+                <div class="build-img-wrap">
+                    <img src="Images/TheKiller.png" alt="TheKiller Build"> 
+                </div>
+                <div class="build-info">
+                    <h3>The Killer</h3>
+                    <p>My go to killer</p>
+                </div>
+            </div>
+
+            <div class="build-item" onclick="openModal('Downtown', 'Images/build2.jpg', 'A scenic street build capturing the neon vibe of the district. Great for photography and casual hangouts.')">
+                <div class="build-img-wrap">
+                    <img src="Images/build2.jpg" alt="Build 2">
+                </div>
+                <div class="build-info">
+                    <h3>Downtown</h3>
+                    <p>Street visuals</p>
+                </div>
+            </div>
+
+            <div class="build-item" onclick="openModal('Training Hall', 'Images/build3.jpg', 'A controlled environment for 1v1 combat practice. Features symmetric obstacles and flat terrain.')">
+                <div class="build-img-wrap">
+                    <img src="Images/build3.jpg" alt="Build 3">
+                </div>
+                <div class="build-info">
+                    <h3>Training Hall</h3>
+                    <p>1v1 Arena</p>
+                </div>
+            </div>
+
+            <div class="build-item" onclick="openModal('Lobby', 'Images/build4.jpg', 'The main spawn hub. Designed to be welcoming with clear navigation to all other zones.')">
+                <div class="build-img-wrap">
+                    <img src="Images/build4.jpg" alt="Build 4">
+                </div>
+                <div class="build-info">
+                    <h3>Lobby</h3>
+                    <p>Main spawn area</p>
+                </div>
+            </div>
+
+        </div> 
+    </div>
+
+    <div id="buildModal" class="modal-overlay" onclick="closeModal(event)">
+        <div class="modal-card">
+            <span class="close-btn" onclick="toggleModal(false)">&times;</span>
+            
+            <div class="modal-img-wrap">
+                <img id="modalImg" src="" alt="Build Detail">
+            </div>
+            
+            <h2 id="modalTitle" class="modal-title">Title Here</h2>
+            <p id="modalDesc" class="modal-desc">Description goes here.</p>
+            
+            </div>
+    </div>
+
+    <script>
+        // Function to Open the Modal with specific data
+        function openModal(title, imgSrc, desc) {
+            // 1. Inject Data
+            document.getElementById('modalTitle').innerText = title;
+            document.getElementById('modalImg').src = imgSrc;
+            document.getElementById('modalDesc').innerText = desc;
+            
+            // 2. Show Modal
+            toggleModal(true);
+        }
+
+        // Function to Close logic
+        function closeModal(event) {
+            // Close only if clicking the dark overlay, not the card itself
+            if (event.target.classList.contains('modal-overlay')) {
+                toggleModal(false);
+            }
+        }
+
+        // Helper to switch class
+        function toggleModal(show) {
+            const modal = document.getElementById('buildModal');
+            if(show) {
+                modal.classList.add('active');
+            } else {
+                modal.classList.remove('active');
+            }
+        }
+    </script>
+
+</body>
+</html>
