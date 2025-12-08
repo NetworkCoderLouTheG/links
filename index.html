@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Private Server Links</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Asap+Condensed:wght@700&display=swap" rel="stylesheet">
+
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background:#f0e6dd;
+            color:#181818;
+            min-height:100vh;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            padding:16px;
+        }
+        .card{
+            position:relative;
+            background:#ddd8d3;
+            width:100%;
+            max-width:520px;
+            max-height:90vh;
+            border-radius:18px;
+            padding:26px 22px 30px;
+            box-shadow:0 18px 40px rgba(0,0,0,0.16);
+            border:1px solid rgba(0,0,0,0.04);
+            display:flex;
+            flex-direction:column;
+            overflow-y:auto;
+            overflow:hidden;
+        }
+        .card::before{
+            content:"";
+            position:absolute;
+            inset:0;
+            background:url("sd_logo.png") center/140% no-repeat;
+            opacity:0.30;
+            filter:blur(2px);
+            z-index:0;
+        }
+        .card > *{
+            position:relative;
+            z-index:1;
+        }
+
+        .avatar-wrap{
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            margin-bottom:16px;
+        }
+        .avatar{
+            width:170px;
+            height:170px;
+            border-radius:50%;
+            overflow:hidden;
+            border:2px solid rgba(0,0,0,0.25);
+            background:#000;
+        }
+        .avatar img{
+            width:100%;
+            height:100%;
+            object-fit:cover;
+        }
+        .name {
+            font-family: 'Asap Condensed', sans-serif;
+            font-weight: 700;
+            text-transform: lowercase;
+            margin-top: 12px;
+            font-size: 2.5rem;
+            letter-spacing: -0.02em;
+            color: #181818;
+        }
+
+        .subtitle{
+            font-size:0.86rem;
+            color:#4a4139;
+            margin-top:4px;
+            text-align:center;
+        }
+
+        .buttons{
+            margin-top:18px;
+        }
+        .btn{
+            display:flex;                 /* icon + text row */
+            align-items:center;
+            justify-content:center;
+            gap:8px;                      /* space between icon and text */
+            width:100%;
+            padding:13px 18px;
+            border-radius:999px;
+            margin:7px 0;
+            text-decoration:none;
+            font-size:0.9rem;
+            font-weight:600;
+            letter-spacing:0.06em;
+            text-transform:uppercase;
+            text-align:center;
+            border:1px solid #181818;
+            background:#181818;
+            color:#f5ece4;
+            transition:background 0.15s ease, color 0.15s ease,
+                        transform 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .btn-alt{
+            display:flex;                 /* icon + text row */
+            align-items:center;
+            justify-content:center;
+            gap:8px;                      /* space between icon and text */
+            width:100%;
+            padding:13px 18px;
+            border-radius:999px;
+            margin:7px 0;
+            text-decoration:none;
+            font-size:0.9rem;
+            font-weight:600;
+            letter-spacing:0.06em;
+            text-transform:uppercase;
+            text-align:center;
+            border:1px solid #ffffff;
+            background:hsl(30, 100%, 100%);
+            color:#000000;
+            transition:background 0.15s ease, color 0.15s ease,
+                        transform 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .btn:hover{
+            background:transparent;
+            color:#181818;
+            transform:translateY(-1px);
+            box-shadow:0 6px 14px rgb(104, 102, 102);
+        }
+
+        .btn-alt:hover{
+            background:transparent;
+            color:#181818;
+            transform:translateY(-1px);
+            box-shadow: 0 6px 14px rgba(0,0,0,1);
+
+        }
+
+        .btn-icon{
+            width:40px;
+            height:40px;
+            object-fit:contain;
+            flex-shrink:0;
+            filter:drop-shadow(0 0 2px rgba(0,0,0,0.55));
+        }
+
+        .rules{
+            margin-top:22px;
+            background:rgba(255,255,255,0.72);
+            border-radius:12px;
+            border:1px solid rgba(0,0,0,0.06);
+            padding:14px 14px 10px;
+            font-size:0.8rem;
+            color:#2b241f;
+        }
+        .rules h3{
+            font-size:0.8rem;
+            text-align:center;
+            margin-bottom:8px;
+            text-transform:uppercase;
+            letter-spacing:0.08em;
+        }
+        .section-title{
+            font-weight:700;
+            margin-top:6px;
+            margin-bottom:3px;
+        }
+        .rules ul{
+            padding-left:18px;
+            margin-bottom:4px;
+        }
+        .rules li{margin-bottom:2px;}
+        .rules-note{
+            margin-top:7px;
+            font-weight:600;
+            text-align:center;
+        }
+
+        @media (max-width:600px){
+            .card{
+                max-width:100%;
+                margin:0 10px;
+            }
+            .btn{
+                font-size:0.85rem;
+            }
+        }
+
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="avatar-wrap">
+            <div class="avatar">
+                <img src="YukaAva.png" alt="Avatar">
+            </div>
+            <div class="name">Yuka</div>
+            <div class="subtitle">
+                i'm about to destroy kids.
+            </div>
+        </div>
+
+        <div class="buttons">
+            <!-- Discord button with SD logo -->
+            <a href="https://discord.com/invite/QXyRR7x7sd"
+               class="btn" target="_blank">
+                <img src="sd_logo.png" alt="SD logo" class="btn-icon">
+                <span>Discord Community Server</span>
+            </a>
+
+            <!-- Violence District button with VD icon -->
+            <a href="https://www.roblox.com/share?code=ebf7fc9d3ed3a543b6f1382816856223&type=Server"
+               class="btn-alt" target="_blank">
+                <img src="VDicon.png" alt="VD icon" class="btn-icon">
+                <span>Violence District Private Server</span>
+            </a>
+
+            <!-- Profile button (no icon, just text) -->
+            <a href="https://www.roblox.com/users/2548263810/profile?friendshipSourceType=ProfileShare"
+               class="btn" target="_blank">
+               <img src="RobloxAva.png" alt="Robloxicon" class="btn-icon">
+                <span>Roblox Profile Link</span>
+            </a>
+        </div>
+
+        <div class="rules">
+            <h3>"Violence District — Viewer Rules"</h3>
+
+            <div class="section-title">Survivor</div>
+            <ul>
+                <li>Survivor rule 1 goes here.</li>
+                <li>Survivor rule 2 goes here.</li>
+            </ul>
+
+            <div class="section-title">Killer</div>
+            <ul>
+                <li>Killer rule 1 goes here.</li>
+            </ul>
+
+            <div class="section-title">Not Allowed</div>
+            <ul>
+                <li>No slugging, no camping, no AFK.</li>
+            </ul>
+
+            <div class="rules-note">
+                Feel free to ask me about the rules during my live for more details.
+            </div>
+        </div>
+    </div>
+</body>
+</html>
