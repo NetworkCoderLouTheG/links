@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yuka's Builds</title>
+    <style>
+        @font-face { font-family: 'Cleanow'; src: url('Cleanow.ttf') format('truetype'); }
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{ font-family: 'Cleanow', sans-serif; background:#f0e6dd; color:#181818; min-height:100vh; display:flex; justify-content:center; align-items: flex-start; padding:16px; }
+
+        .card { margin: auto; position: relative; background: #ddd8d3; width: 100%; max-width: 600px; border-radius: 18px; padding: 26px 22px 30px; box-shadow: 0 18px 40px rgba(0,0,0,0.16); display: flex; flex-direction: column; }
+        .card::before{ content:""; position:absolute; inset:0; background:url("Images/sd_logo.png") center/140% no-repeat; opacity:0.30; filter:blur(2px); z-index:0; pointer-events: none; }
+        .card > *{ position:relative; z-index:1; }
+
+        .header-nav { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .page-title { font-size: 1.8rem; font-weight: 700; text-align: right; }
+        .back-btn { text-decoration: none; color: #181818; font-weight: 600; border: 1px solid #181818; padding: 8px 14px; border-radius: 99px; transition: 0.2s; }
+        .back-btn:hover { background: #181818; color: #f5ece4; }
+
+        .builds-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
+        @media(min-width: 500px) { .builds-grid { grid-template-columns: 1fr 1fr; } }
+        .build-item { background: rgba(255,255,255,0.5); padding: 10px; border-radius: 12px; cursor: pointer; transition: 0.2s; }
+        .build-item:hover { transform: translateY(-3px); background: rgba(255,255,255,0.9); }
+        .build-img-wrap { width: 100%; height: 150px; border-radius: 8px; overflow: hidden; background: #000; margin-bottom: 10px; }
+        .build-img-wrap img { width: 100%; height: 100%; object-fit: cover; }
+
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); z-index: 1000; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+        .modal-overlay.active { opacity: 1; pointer-events: all; }
+        .modal-card { background: #f0e6dd; width: 95%; max-width: 500px; border-radius: 20px; padding: 20px; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.3); max-height: 90vh; overflow-y: auto; transform: translateY(30px); transition: transform 0.3s; }
+        .modal-overlay.active .modal-card { transform: translateY(0); }
+        .close-btn { position: absolute; top: 15px; right: 20px; font-size: 2rem; cursor: pointer; z-index: 10; }
+
+        /* NON-EDITABLE IMAGE (No cursor pointer, no hover text) */
+        .modal-img-wrap { width: 100%; height: 250px; border-radius: 12px; overflow: hidden; margin-bottom: 15px; background: #000; position: relative; }
+        .modal-img-wrap img { width: 100%; height: 100%; object-fit: cover; object-position: top center; }
+
+        /* NON-EDITABLE HEXAGONS */
+        .slots-wrapper { display: flex; justify-content: center; gap: 15px; margin-top: -30px; margin-bottom: 20px; position: relative; z-index: 5; }
+        .hex-slot { width: 70px; height: 70px; background: #2a2a2a; clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); display: flex; justify-content: center; align-items: center; cursor: default; border: 2px solid rgba(255,255,255,0.1); position: relative; }
+        .hex-slot img { width: 100%; height: 100%; object-fit: cover; clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); display: none; }
+        .hex-slot.filled img { display: block; }
+        .hex-slot::after { content: ""; } /* Removes the '+' */
+
+        .perk-details-list { margin-top: 10px; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 10px; }
+        .perk-detail-item { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px dashed rgba(0,0,0,0.1); display: flex; gap: 10px; }
+        .perk-detail-item img { width: 40px; height: 40px; object-fit: contain; }
+        .perk-text h4 { font-size: 1rem; margin-bottom: 2px; }
+        .perk-text p { font-size: 0.85rem; color: #4a4139; line-height: 1.4; }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <div class="header-nav">
+            <a href="index.html" class="back-btn">← Back</a>
+            <div class="page-title">my vd builds</div>
+        </div>
+
+        <div class="builds-grid">
+            <div class="build-item" onclick="openBuild('killer')">
+                <div class="build-img-wrap"><img id="grid-killer-img" src="Images/TheKiller.png"></div>
+                <div class="build-info">
+                    <h3 id="grid-killer-title">The Killer</h3>
+                    <p>My Main Loadout</p>
+                </div>
+            </div>
+
+            <div class="build-item" onclick="openBuild('downtown')">
+                <div class="build-img-wrap"><img src="Images/build2.jpg"></div>
+                <div class="build-info"><h3>Survivor</h3><p>my survivor</p></div>
+            </div>
+             <div class="build-item" onclick="openBuild('training')">
+                <div class="build-img-wrap"><img src="Images/build3.jpg"></div>
+                <div class="build-info"><h3>Maps</h3><p>MAPAAAAA</p></div>
+            </div>
+             <div class="build-item" onclick="openBuild('lobby')">
+                <div class="build-img-wrap"><img src="Images/build4.jpg"></div>
+                <div class="build-info"><h3>Emotes</h3><p>ahuhuhu</p></div>
+            </div>
+        </div> 
+    </div>
+
+    <div id="buildModal" class="modal-overlay" onclick="closeModal(event)">
+        <div class="modal-card">
+            <span class="close-btn" onclick="toggleModal(false)">&times;</span>
+            <div class="modal-img-wrap">
+                <img id="modalImg" src="" alt="Build Detail">
+            </div>
+            <div id="hexContainer" class="slots-wrapper" style="display:none;">
+                <div class="hex-slot"><img id="slot-0-img" src=""></div>
+                <div class="hex-slot"><img id="slot-1-img" src=""></div>
+                <div class="hex-slot"><img id="slot-2-img" src=""></div>
+            </div>
+            <h2 id="modalTitle" style="font-size:1.5rem; margin-bottom:5px;">Title</h2>
+            <p id="modalDesc" style="margin-bottom:15px; font-size:0.9rem;">Description</p>
+            <div id="perkDetails" class="perk-details-list" style="display:none;"></div>
+        </div>
+    </div>
+
+    <script>
+        const killerLibrary = [ { id: 'killer', name: 'The Killer', img: 'Images/TheKiller.png', desc: 'An unstoppable force that breaks pallets faster and has higher terror radius.' } ];
+
+        let currentLoadout = [null, null, null];
+        let currentKiller = killerLibrary[0];
+
+        // STARTUP: LOAD SAVED DATA
+        loadData();
+        initGridUI();
+
+        function loadData() {
+            const savedData = localStorage.getItem('yukaBuildsData');
+            if(savedData) {
+                const parsed = JSON.parse(savedData);
+                currentKiller = parsed.killer;
+                currentLoadout = parsed.loadout;
+            }
+        }
+
+        function initGridUI() {
+            const gridImg = document.getElementById('grid-killer-img');
+            const gridTitle = document.getElementById('grid-killer-title');
+            if(gridImg) gridImg.src = currentKiller.img;
+            if(gridTitle) gridTitle.innerText = currentKiller.name;
+        }
+
+        function openBuild(id) {
+            const hexContainer = document.getElementById('hexContainer');
+            const perkDetails = document.getElementById('perkDetails');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalImg = document.getElementById('modalImg');
+            const modalDesc = document.getElementById('modalDesc');
+
+            if(id === 'killer') {
+                modalTitle.innerText = currentKiller.name;
+                modalImg.src = currentKiller.img;
+                modalDesc.innerText = currentKiller.desc;
+                hexContainer.style.display = 'flex';
+                perkDetails.style.display = 'block';
+                updateLoadoutUI();
+            } else {
+                hexContainer.style.display = 'none';
+                perkDetails.style.display = 'none';
+                if(id === 'downtown') { modalTitle.innerText = "Downtown"; modalImg.src = "Images/build2.jpg"; modalDesc.innerText = "Street visuals."; }
+                else if(id === 'training') { modalTitle.innerText = "Training Hall"; modalImg.src = "Images/build3.jpg"; modalDesc.innerText = "1v1 Arena."; }
+                else { modalTitle.innerText = "Lobby"; modalImg.src = "Images/build4.jpg"; modalDesc.innerText = "Spawn Hub."; }
+            }
+            toggleModal(true);
+        }
+
+        function updateLoadoutUI() {
+            const detailsContainer = document.getElementById('perkDetails');
+            detailsContainer.innerHTML = ''; 
+            currentLoadout.forEach((perk, index) => {
+                const slotImg = document.getElementById(`slot-${index}-img`);
+                const slotDiv = slotImg.parentElement;
+                if (perk) {
+                    slotImg.src = perk.img; slotDiv.classList.add('filled');
+                    detailsContainer.insertAdjacentHTML('beforeend', `<div class="perk-detail-item"><img src="${perk.img}"><div class="perk-text"><h4>${perk.name}</h4><p>${perk.desc}</p></div></div>`);
+                } else {
+                    slotImg.src = ""; slotDiv.classList.remove('filled');
+                }
+            });
+        }
+
+        function closeModal(event) { if (event.target.classList.contains('modal-overlay')) toggleModal(false); }
+        function toggleModal(show) { const modal = document.getElementById('buildModal'); show ? modal.classList.add('active') : modal.classList.remove('active'); }
+    </script>
+</body>
+</html>
