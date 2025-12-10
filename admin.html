@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ADMIN - Yuka's Builds</title>
+    
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
     <style>
         @font-face {
             font-family: 'Cleanow';
@@ -16,6 +20,7 @@
             box-sizing: border-box;
         }
 
+        /* Red top border to indicate Admin Mode */
         body {
             font-family: 'Cleanow', sans-serif;
             background: #e0d6cd;
@@ -186,7 +191,7 @@
             z-index: 10;
         }
 
-        /* EDITABLE IMAGE */
+        /* --- FIXED EDITABLE IMAGE --- */
         .modal-img-wrap {
             width: 100%;
             height: 250px;
@@ -198,6 +203,7 @@
             cursor: pointer;
             border: 2px solid transparent;
             transition: 0.2s;
+            z-index: 2;
         }
 
         .modal-img-wrap:hover {
@@ -217,6 +223,7 @@
             font-size: 1.2rem;
             opacity: 0;
             transition: opacity 0.2s;
+            pointer-events: none; /* Allows clicks to pass through */
         }
 
         .modal-img-wrap:hover::after {
@@ -230,7 +237,7 @@
             object-position: top center;
         }
 
-        /* EDITABLE HEXAGONS */
+        /* HEXAGONS */
         .slots-wrapper {
             display: flex;
             justify-content: center;
@@ -406,21 +413,13 @@
 
         <div class="builds-grid">
             <div class="build-item" onclick="openBuild('killer')">
-                <div class="build-img-wrap"><img id="grid-killer-img" src="Images/TheKiller.png"></div>
-                <div class="build-info"><h3 id="grid-killer-title">The Killer</h3><p style="color:#8f2f2f; font-weight:bold;">Click to Edit Loadout</p></div>
-            </div>
-            
-            <div class="build-item" onclick="openBuild('downtown')">
-                <div class="build-img-wrap"><img src="Images/build2.jpg"></div>
-                <div class="build-info"><h3>Downtown</h3><p>Street visuals</p></div>
-            </div>
-             <div class="build-item" onclick="openBuild('training')">
-                <div class="build-img-wrap"><img src="Images/build3.jpg"></div>
-                <div class="build-info"><h3>Training Hall</h3><p>1v1 Arena</p></div>
-            </div>
-             <div class="build-item" onclick="openBuild('lobby')">
-                <div class="build-img-wrap"><img src="Images/build4.jpg"></div>
-                <div class="build-info"><h3>Lobby</h3><p>Main Hub</p></div>
+                <div class="build-img-wrap">
+                    <img id="grid-killer-img" src="Images/TheKiller.png">
+                </div>
+                <div class="build-info">
+                    <h3 id="grid-killer-title">The Killer</h3>
+                    <p style="color:#8f2f2f; font-weight:bold;">Click to Edit Loadout</p>
+                </div>
             </div>
         </div> 
     </div>
@@ -428,14 +427,17 @@
     <div id="buildModal" class="modal-overlay" onclick="closeModal(event)">
         <div class="modal-card">
             <span class="close-btn" onclick="toggleModal(false)">&times;</span>
+            
             <div class="modal-img-wrap" onclick="openSelector('killer', null)">
                 <img id="modalImg" src="" alt="Build Detail">
             </div>
+            
             <div id="hexContainer" class="slots-wrapper" style="display:none;">
                 <div class="hex-slot" onclick="openSelector('perk', 0)"><img id="slot-0-img" src=""></div>
                 <div class="hex-slot" onclick="openSelector('perk', 1)"><img id="slot-1-img" src=""></div>
                 <div class="hex-slot" onclick="openSelector('perk', 2)"><img id="slot-2-img" src=""></div>
             </div>
+            
             <h2 id="modalTitle" style="font-size:1.5rem; margin-bottom:5px;">Title</h2>
             <p id="modalDesc" style="margin-bottom:15px; font-size:0.9rem;">Description</p>
             <div id="perkDetails" class="perk-details-list" style="display:none;"></div>
@@ -450,11 +452,28 @@
     </div>
 
     <script>
+        // --- 1. FIREBASE CONFIGURATION (Compatible Format) ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyAFyLfbWKoTcnY9tRdeR_JA8D6IxIDtgS8",
+            authDomain: "yuka-website-database.firebaseapp.com",
+            projectId: "yuka-website-database",
+            storageBucket: "yuka-website-database.firebasestorage.app",
+            messagingSenderId: "560430723404",
+            appId: "1:560430723404:web:8cb5e238a4ffc38c831fe9",
+            measurementId: "G-7KW8R01QX1"
+        };
+        
+        // Initialize Firebase Global Variable
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // --- 2. SECURITY CHECK ---
         if (!sessionStorage.getItem('isAdmin')) {
             alert("Restricted Access. Please login via the main page.");
             window.location.href = "index.html";
         }
 
+        // --- 3. DATA LIBRARIES ---
         const killerLibrary = [
             { id: 'slasher', name: 'The Slasher', img: 'Images/TheSlasher.png', desc: 'The default killer. Balanced stats and versatile playstyle.' },
             { id: 'stalker', name: 'The Stalker', img: 'Images/TheStalker.png', desc: 'A stealthy killer who moves silently and strikes from the shadows.' },
@@ -494,27 +513,45 @@
         let activeSlotIndex = null; 
         let activeSelectionType = null; 
 
-        loadData();
-        initGridUI();
-
-        function saveData() {
-            const dataToSave = { killer: currentKiller, loadout: currentLoadout };
-            localStorage.setItem('yukaBuildsData', JSON.stringify(dataToSave));
-        }
-
-        function loadData() {
-            const savedData = localStorage.getItem('yukaBuildsData');
-            if(savedData) {
-                const parsed = JSON.parse(savedData);
-                currentKiller = parsed.killer;
-                currentLoadout = parsed.loadout;
+        // --- 4. CLOUD SYNC ---
+        
+        // Listen for changes from the cloud
+        db.collection("builds").doc("mainBuild").onSnapshot((doc) => {
+            if (doc.exists) {
+                const data = doc.data();
+                if(data.killer) currentKiller = data.killer;
+                if(data.loadout) currentLoadout = data.loadout;
+                
+                initGridUI();
+                
+                if(document.getElementById('buildModal').classList.contains('active')) {
+                    document.getElementById('modalTitle').innerText = currentKiller.name;
+                    document.getElementById('modalImg').src = currentKiller.img;
+                    document.getElementById('modalDesc').innerText = currentKiller.desc;
+                    updateLoadoutUI();
+                }
+            } else {
+                console.log("Creating initial database entry...");
+                saveData(); // Create first entry if none exists
             }
+        }, (error) => {
+            console.error("Error reading DB:", error);
+        });
+
+        // Save data to the cloud
+        function saveData() {
+            db.collection("builds").doc("mainBuild").set({
+                killer: currentKiller,
+                loadout: currentLoadout
+            })
+            .then(() => { console.log("Saved to cloud"); })
+            .catch((error) => { alert("Error saving: " + error); });
         }
 
         function initGridUI() {
             const gridImg = document.getElementById('grid-killer-img');
             const gridTitle = document.getElementById('grid-killer-title');
-            if(gridImg) gridImg.src = currentKiller.img;
+            if(gridImg && currentKiller.img) gridImg.src = currentKiller.img;
             if(gridTitle) gridTitle.innerText = currentKiller.name;
         }
 
@@ -532,12 +569,6 @@
                 hexContainer.style.display = 'flex';
                 perkDetails.style.display = 'block';
                 updateLoadoutUI();
-            } else {
-                 hexContainer.style.display = 'none';
-                perkDetails.style.display = 'none';
-                if(id === 'downtown') { modalTitle.innerText = "Downtown"; modalImg.src = "Images/build2.jpg"; modalDesc.innerText = "Street visuals."; }
-                else if(id === 'training') { modalTitle.innerText = "Training Hall"; modalImg.src = "Images/build3.jpg"; modalDesc.innerText = "1v1 Arena."; }
-                else { modalTitle.innerText = "Lobby"; modalImg.src = "Images/build4.jpg"; modalDesc.innerText = "Spawn Hub."; }
             }
             toggleModal(true);
         }
@@ -587,12 +618,15 @@
                 currentLoadout[activeSlotIndex] = itemObj;
                 updateLoadoutUI();
             }
-            saveData();
+            saveData(); // Save to Cloud
             closeSelector();
         }
 
         function removePerk() {
-            currentLoadout[activeSlotIndex] = null; updateLoadoutUI(); saveData(); closeSelector();
+            currentLoadout[activeSlotIndex] = null; 
+            updateLoadoutUI(); 
+            saveData(); // Save to Cloud
+            closeSelector();
         }
 
         function closeSelector() { document.getElementById('selectionMenu').classList.remove('open'); }

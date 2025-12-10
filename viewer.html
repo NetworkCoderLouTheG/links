@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Yuka's Builds</title>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+
     <style>
         @font-face {
             font-family: 'Cleanow';
@@ -124,6 +128,7 @@
             object-fit: cover;
         }
 
+        /* MODAL */
         .modal-overlay {
             position: fixed;
             top: 0;
@@ -173,6 +178,7 @@
             z-index: 10;
         }
 
+        /* READ-ONLY IMAGE */
         .modal-img-wrap {
             width: 100%;
             height: 250px;
@@ -190,6 +196,7 @@
             object-position: top center;
         }
 
+        /* READ-ONLY SLOTS */
         .slots-wrapper {
             display: flex;
             justify-content: center;
@@ -208,7 +215,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            cursor: default;
+            cursor: default; /* No pointer cursor */
             border: 2px solid rgba(255, 255, 255, 0.1);
             position: relative;
         }
@@ -225,6 +232,7 @@
             display: block;
         }
 
+        /* No plus sign for read-only mode */
         .hex-slot::after {
             content: "";
         }
@@ -271,24 +279,13 @@
 
         <div class="builds-grid">
             <div class="build-item" onclick="openBuild('killer')">
-                <div class="build-img-wrap"><img id="grid-killer-img" src="Images/TheKiller.png"></div>
+                <div class="build-img-wrap">
+                    <img id="grid-killer-img" src="Images/TheKiller.png">
+                </div>
                 <div class="build-info">
                     <h3 id="grid-killer-title">The Killer</h3>
                     <p>My Main Loadout</p>
                 </div>
-            </div>
-
-            <div class="build-item" onclick="openBuild('downtown')">
-                <div class="build-img-wrap"><img src="Images/build2.jpg"></div>
-                <div class="build-info"><h3>Survivor</h3><p>my survivor</p></div>
-            </div>
-             <div class="build-item" onclick="openBuild('training')">
-                <div class="build-img-wrap"><img src="Images/build3.jpg"></div>
-                <div class="build-info"><h3>Maps</h3><p>MAPAAAAA</p></div>
-            </div>
-             <div class="build-item" onclick="openBuild('lobby')">
-                <div class="build-img-wrap"><img src="Images/build4.jpg"></div>
-                <div class="build-info"><h3>Emotes</h3><p>ahuhuhu</p></div>
             </div>
         </div> 
     </div>
@@ -296,14 +293,17 @@
     <div id="buildModal" class="modal-overlay" onclick="closeModal(event)">
         <div class="modal-card">
             <span class="close-btn" onclick="toggleModal(false)">&times;</span>
+            
             <div class="modal-img-wrap">
                 <img id="modalImg" src="" alt="Build Detail">
             </div>
+
             <div id="hexContainer" class="slots-wrapper" style="display:none;">
                 <div class="hex-slot"><img id="slot-0-img" src=""></div>
                 <div class="hex-slot"><img id="slot-1-img" src=""></div>
                 <div class="hex-slot"><img id="slot-2-img" src=""></div>
             </div>
+
             <h2 id="modalTitle" style="font-size:1.5rem; margin-bottom:5px;">Title</h2>
             <p id="modalDesc" style="margin-bottom:15px; font-size:0.9rem;">Description</p>
             <div id="perkDetails" class="perk-details-list" style="display:none;"></div>
@@ -311,28 +311,55 @@
     </div>
 
     <script>
-        const killerLibrary = [ { id: 'killer', name: 'The Killer', img: 'Images/TheKiller.png', desc: 'An unstoppable force that breaks pallets faster and has higher terror radius.' } ];
+        // --- 1. FIREBASE CONFIGURATION (Compatible Format) ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyAFyLfbWKoTcnY9tRdeR_JA8D6IxIDtgS8",
+            authDomain: "yuka-website-database.firebaseapp.com",
+            projectId: "yuka-website-database",
+            storageBucket: "yuka-website-database.firebasestorage.app",
+            messagingSenderId: "560430723404",
+            appId: "1:560430723404:web:8cb5e238a4ffc38c831fe9",
+            measurementId: "G-7KW8R01QX1"
+        };
+        
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
 
+        // State
         let currentLoadout = [null, null, null];
-        let currentKiller = killerLibrary[0];
+        let currentKiller = { name: 'Loading...', img: 'Images/TheKiller.png', desc: '' }; // Placeholder
 
-        // STARTUP: LOAD SAVED DATA
-        loadData();
-        initGridUI();
-
-        function loadData() {
-            const savedData = localStorage.getItem('yukaBuildsData');
-            if(savedData) {
-                const parsed = JSON.parse(savedData);
-                currentKiller = parsed.killer;
-                currentLoadout = parsed.loadout;
+        // --- 2. REAL-TIME LISTENER ---
+        // This listens to the cloud. When Admin saves, this runs automatically.
+        db.collection("builds").doc("mainBuild").onSnapshot((doc) => {
+            if (doc.exists) {
+                const data = doc.data();
+                if(data.killer) currentKiller = data.killer;
+                if(data.loadout) currentLoadout = data.loadout;
+                
+                // Update the Grid (Main Menu)
+                initGridUI();
+                
+                // If the modal is open, update that too so viewers see changes live
+                if(document.getElementById('buildModal').classList.contains('active')) {
+                    document.getElementById('modalTitle').innerText = currentKiller.name;
+                    document.getElementById('modalImg').src = currentKiller.img;
+                    document.getElementById('modalDesc').innerText = currentKiller.desc;
+                    updateLoadoutUI();
+                }
+            } else {
+                console.log("No data found in cloud yet.");
             }
-        }
+        }, (error) => {
+            console.error("Error reading DB:", error);
+        });
+
+        // --- 3. UI FUNCTIONS ---
 
         function initGridUI() {
             const gridImg = document.getElementById('grid-killer-img');
             const gridTitle = document.getElementById('grid-killer-title');
-            if(gridImg) gridImg.src = currentKiller.img;
+            if(gridImg && currentKiller.img) gridImg.src = currentKiller.img;
             if(gridTitle) gridTitle.innerText = currentKiller.name;
         }
 
@@ -347,15 +374,10 @@
                 modalTitle.innerText = currentKiller.name;
                 modalImg.src = currentKiller.img;
                 modalDesc.innerText = currentKiller.desc;
+                
                 hexContainer.style.display = 'flex';
                 perkDetails.style.display = 'block';
                 updateLoadoutUI();
-            } else {
-                hexContainer.style.display = 'none';
-                perkDetails.style.display = 'none';
-                if(id === 'downtown') { modalTitle.innerText = "Downtown"; modalImg.src = "Images/build2.jpg"; modalDesc.innerText = "Street visuals."; }
-                else if(id === 'training') { modalTitle.innerText = "Training Hall"; modalImg.src = "Images/build3.jpg"; modalDesc.innerText = "1v1 Arena."; }
-                else { modalTitle.innerText = "Lobby"; modalImg.src = "Images/build4.jpg"; modalDesc.innerText = "Spawn Hub."; }
             }
             toggleModal(true);
         }
@@ -365,18 +387,30 @@
             detailsContainer.innerHTML = ''; 
             currentLoadout.forEach((perk, index) => {
                 const slotImg = document.getElementById(`slot-${index}-img`);
+                if(!slotImg) return;
                 const slotDiv = slotImg.parentElement;
+
                 if (perk) {
-                    slotImg.src = perk.img; slotDiv.classList.add('filled');
+                    slotImg.src = perk.img;
+                    slotDiv.classList.add('filled');
                     detailsContainer.insertAdjacentHTML('beforeend', `<div class="perk-detail-item"><img src="${perk.img}"><div class="perk-text"><h4>${perk.name}</h4><p>${perk.desc}</p></div></div>`);
                 } else {
-                    slotImg.src = ""; slotDiv.classList.remove('filled');
+                    slotImg.src = "";
+                    slotDiv.classList.remove('filled');
                 }
             });
         }
 
-        function closeModal(event) { if (event.target.classList.contains('modal-overlay')) toggleModal(false); }
-        function toggleModal(show) { const modal = document.getElementById('buildModal'); show ? modal.classList.add('active') : modal.classList.remove('active'); }
+        function closeModal(event) {
+            if (event.target.classList.contains('modal-overlay')) {
+                toggleModal(false);
+            }
+        }
+
+        function toggleModal(show) {
+            const modal = document.getElementById('buildModal');
+            show ? modal.classList.add('active') : modal.classList.remove('active');
+        }
     </script>
 </body>
 </html>
