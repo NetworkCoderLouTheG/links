@@ -481,27 +481,27 @@
         ];
 
         const perkLibrary = [
-            { id: 'terror', name: 'Terror Spread', img: 'Images/TerrorSpreadIcon.png', desc: 'Survivors still feel helpless even after completing an objective.' },
-            { id: 'piercing', name: 'Piercing Reverie', img: 'Images/PiercingReverieIcon.png', desc: 'Gain Tokens when hooking survivors.' },
-            { id: 'sloppy', name: 'Sloppy Mess', img: 'Images/SloppyMessIcon.png', desc: 'Basic attacks cause survivors to bleed more.' },
-            { id: 'echo', name: 'Echo Of The Void', img: 'Images/EchoOftheVoidIcon.png', desc: 'Basic attacks cause survivors to bleed more.' },
-            { id: 'abyssal', name: 'Abyssal Covenant', img: 'Images/AbyssalCovenantIcon.png', desc: 'Basic attacks cause survivors to bleed more.' },
-            { id: 'blood', name: 'Blood Between Worlds', img: 'Images/BloodBetweenWorldsIcon.png', desc: 'Basic attacks cause survivors to bleed more.' },
-            { id: 'brutal', name: 'Brutal Strength', img: 'Images/BrutalStrengthIcon.png', desc: 'Basic attacks cause survivors to bleed more.' },
-            { id: 'combo', name: 'Combo Streak', img: 'Images/ComboStreakIcon.png', desc: 'Basic attacks cause survivors to bleed more.' },
-            { id: 'corrupted', name: 'Corrupted Path', img: 'Images/CorruptedPathIcon.png', desc: 'Basic attacks cause survivors to bleed more.' },
-            { id: 'crack', name: 'Crackdown', img: 'Images/CrackdownIcon.png', desc: 'Basic attacks cause survivors to bleed more.' },
-            { id: 'location', name: 'Echo Location', img: 'Images/EchoLocationIcon.png', desc: 'Basic attacks cause survivors to bleed more.' },
-            { id: 'enhanced', name: 'Enhanced Senses', img: 'Images/EnhancedSensesIcon.png', desc: 'Basic attacks cause survivors to bleed more.' },
-            { id: 'eternal', name: 'Eternal Torment', img: 'Images/EternalTormentIcon.png', desc: 'Basic attacks cause survivors to bleed more.' },
-            { id: 'excitement', name: 'Excitement', img: 'Images/ExcitementIcon.png', desc: 'Basic attacks cause survivors to bleed more.' },
-            { id: 'hard', name: 'Hard Swing', img: 'Images/HardSwingIcon.png', desc: 'Basic attacks cause survivors to bleed more.' },
-            { id: 'next', name: 'Next In Line', img: 'Images/NextInLineIcon.png', desc: 'Basic attacks cause survivors to bleed more.' },
-            { id: 'offscreen', name: 'Offscreen Scare', img: 'Images/OffscreenScareIcon.png', desc: 'Basic attacks cause survivors to bleed more.' },
-            { id: 'play', name: 'Play With Your Food', img: 'Images/PlayWithYourFoodIcon.png', desc: 'Basic attacks cause survivors to bleed more.' },
-            { id: 'predator', name: 'Predator', img: 'Images/PredatorIcon.png', desc: 'Basic attacks cause survivors to bleed more.' },
-            { id: 'resentment', name: 'Resentment Clinger', img: 'Images/ResentmentClingerIcon.png', desc: 'Basic attacks cause survivors to bleed more.' },
-            { id: 'shadow', name: 'Shadow Trace', img: 'Images/ShadowTraceIcon.png', desc: 'Basic attacks cause survivors to bleed more.' }
+            { id: 'terror', name: 'Terror Spread', img: 'Images/TerrorSpreadIcon.png', desc: 'Survivors still feel helpless even after completing an objective. Each time Survivors complete repairing a Generator they will suffer from the Winded status effect for 20/30/40 seconds.' },
+            { id: 'piercing', name: 'Piercing Reverie', img: 'Images/PiercingReverieIcon.png', desc: 'Each time a Survivor is hooked for the first time, gain 1 Reverie Token (max 4). When a Survivor begins repairing a generator, one token is automatically consumed to apply Piercing Reverie for 60 seconds to that gen: That generators repair progress is paused for 5 seconds, and (if regression starts by any means) its regression speed is increased by 50% while the effect lasts. Survivors working on that gen suffer a 7% slowed effect, which lingers if they get off it until Reverie ends. Generators affected by Reverie are highlighted in white, and the floor around them is surrounded by white fog.' },
+            { id: 'sloppy', name: 'Sloppy Mess', img: 'Images/SloppyMessIcon.png', desc: 'You leave bloody messes whenever you go. When hitting a survivor with a basic attack, the survivor will bleed more, making tracking them easier and slowing the speed for them be healed by 15/20/25%.' },
+            { id: 'echo', name: 'Echo Of The Void', img: 'Images/EchoOftheVoidIcon.png', desc: 'Whenever a Survivor has any line of sight of you for a total of 1.5 seconds, they trigger a loud noise notification for the Killer, and their aura is revealed for 3 seconds. Their camera also becomes monochrome during this time. Then it goes on cooldown for 40 seconds.' },
+            { id: 'abyssal', name: 'Abyssal Covenant', img: 'Images/AbyssalCovenantIcon.png', desc: 'When a Generator reaches 50% repair progression, there is 20/30/40% chance it will become Corrupted and break, alerting the killer. Can trigger twice per match.' },
+            { id: 'blood', name: 'Blood Between Worlds', img: 'Images/BloodBetweenWorldsIcon.png', desc: 'Each time a Survivor loses a health state by any means, one random generator begins to bleed energy, regressing at 125% of the normal regression speed for 12 seconds, even if its being worked on. If any Survivor is actively repairing the affected generator, they suffer an 8% repair speed penalty for 20 seconds. Generators affected by Reverie are highlighted in white, and the floor around them reflects its influence. Can only affect one generator at a time. Has a 45 second cooldown.' },
+            { id: 'brutal', name: 'Brutal Strength', img: 'Images/BrutalStrengthIcon.png', desc: 'Your raw strength alone is enough to destroy anything blocking your way, increases the speed of breaking pallets and generators by 20/30/40%.' },
+            { id: 'combo', name: 'Combo Streak', img: 'Images/ComboStreakIcon.png', desc: 'Chaining a combo is all you can think about. Successfully hitting a Survivor with a Basic Attack grants you a 5 Speed Boost for 8/9/10 seconds.' },
+            { id: 'corrupted', name: 'Corrupted Path', img: 'Images/CorruptedPathIcon.png', desc: 'When hitting a survivor spread your corruption on them making them release a trackable trail for 10/15/20 seconds.' },
+            { id: 'crack', name: 'Crackdown', img: 'Images/CrackdownIcon.png', desc: 'Increase the damage you deal to generators by 5/10/15 charges.' },
+            { id: 'location', name: 'Echo Location', img: 'Images/EchoLocationIcon.png', desc: 'You mastered the sense of hearing, when you break a generator you reveal all nearby Survivors within 70 studs for 3/4/5 seconds.' },
+            { id: 'enhanced', name: 'Enhanced Senses', img: 'Images/EnhancedSensesIcon.png', desc: 'All those years being experimented gave you super human senses. When a survivor performs a rushed action, see their aura for 3/4/5 seconds. This perk then goes on cooldown of 30 seconds.' },
+            { id: 'eternal', name: 'Eternal Torment', img: 'Images/EternalTormentIcon.png', desc: 'Your presence alone makes survivors doubt themselves even after stunning you. When a survivor stuns you by any means, they become vulnerable for 20/25/seconds. The perk then goes on cooldown for 40 seconds.' },
+            { id: 'excitement', name: 'Excitement', img: 'Images/ExcitementIcon.png', desc: 'You get agitated thinking about spiking your victims, the thought of it alone grants you a 6/12/18% speed boost but increases your aura radius by 12 studs.' },
+            { id: 'hard', name: 'Hard Swing', img: 'Images/HardSwingIcon.png', desc: 'You hard swings cause the Survivors to feel dizzy. Applies the Winded status effect to the survivors after getting hit by a basic attack for 10/15/20 seconds.' },
+            { id: 'next', name: 'Next In Line', img: 'Images/NextInLineIcon.png', desc: 'Smell the fear in the air. When you down a Survivor reveal the aura of the farthest Survivor for 3/4/5 seconds.' },
+            { id: 'offscreen', name: 'Offscreen Scare', img: 'Images/OffscreenScareIcon.png', desc: 'Not just a horror movie trope. When not in chase gain 6/8/10% speed boost.' },
+            { id: 'play', name: 'Play With Your Food', img: 'Images/PlayWithYourFoodIcon.png', desc: 'Each time you chase a survivor and let them escape. Play with Your Food gains +1 Token, up to a maximum of 3 Tokens. Grants a stack-able //% speed boost per Token, up to a maximum of 16// Performing Basic Attacks, or Special Attacks that can damage Survivors, consumes-1 Token.' },
+            { id: 'predator', name: 'Predator', img: 'Images/PredatorIcon.png', desc: 'Stalking and hunting is familiar enough to know everything from your victims. When a survivor escapes a chase, see their aura for 4 seconds. This perks only work while in chase and has a cooldown of 40/35/ seconds.' },
+            { id: 'resentment', name: 'Resentment Clinger', img: 'Images/ResentmentClingerIcon.png', desc: 'You always remember the ones that did you wrong, getting stunned gives you +1 Token, while successfully trapping Survivors in Spikes give you 2 Tokens up to a max of 3 Tokens. Each Token Grants you a 30/40/50% lunge increase to your Basic Attacks. Using a Basic Attack removes a Token.' },
+            { id: 'shadow', name: 'Shadow Trace', img: 'Images/ShadowTraceIcon.png', desc: 'At the start of the round, your killers intent radius is nonexistent for 30/45/60 seconds.' }
         ];
 
         let currentLoadout = [null, null, null];
