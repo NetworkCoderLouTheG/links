@@ -22,7 +22,7 @@
 
         .card {
             margin: auto;
-            position:relative;
+            position:relative; /* Necessary for the invisible pixel positioning */
             background:#ddd8d3; width:100%;
             max-width:520px; max-height:90vh;
             overflow-y:auto; overflow-x:hidden;
@@ -36,6 +36,7 @@
         }
 
         @media (min-width: 768px) { .card { max-height: none; overflow-y: visible; } }
+        
         .card::before{
             content:"";
             position:absolute;
@@ -47,6 +48,18 @@
         }
 
         .card > *{ position:relative; z-index:1; }
+
+        /* --- THE INVISIBLE PIXEL (HITBOX) --- */
+        .secret-hitbox {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 50px;   /* Size of the tap area */
+            height: 50px;
+            z-index: 10;   /* Sits above background */
+            cursor: default; /* Keeps mouse cursor normal to avoid suspicion */
+            /* background: rgba(255, 0, 0, 0.2);  Uncomment this line to see the box for testing */
+        }
 
         .avatar-wrap {
             display:flex;
@@ -62,13 +75,10 @@
             border-radius:50%;
             overflow:hidden;
             border:2px solid rgba(0,0,0,0.25);
-            background:#000; cursor: pointer;
-            transition: transform 0.1s;
+            background:#000; 
+            /* Pointer removed so it doesn't look interactive anymore */
+            cursor: default; 
         }
-
-        .avatar:active {
-            transform: scale(0.95);
-        } 
         
         .avatar img {
             width:100%;
@@ -187,6 +197,8 @@
                 height: 32px;
             }
         }
+        
+        /* LOGIN MODAL STYLES */
         .login-overlay {
             position: fixed;
             top: 0;
@@ -267,8 +279,10 @@
     </div>
 
     <div class="card">
+        <div class="secret-hitbox" id="invisible-trigger"></div>
+
         <div class="avatar-wrap">
-            <div class="avatar" id="secret-btn">
+            <div class="avatar">
                 <img src="Images/YukaAva.png" alt="Avatar">
             </div>
             <div class="name">Yuka</div>
@@ -302,36 +316,42 @@
     </div>
 
     <script>
-        // TEMP PASSWORD TO TEST ADMIN
+        // PASSWORD CONFIGURATION
         const SECRET_CODE = "yuka123"; 
-        const CLICK_THRESHOLD = 5;     
-        const CLICK_TIMEOUT = 500;   
 
-        // SECRET DOOR (YUKA'S AVATAR)
+        // OPTION 3: INVISIBLE PIXEL TRIPLE CLICK LOGIC
         let clickCount = 0;
         let clickTimer;
-        const secretBtn = document.getElementById('secret-btn');
+        const invisibleBtn = document.getElementById('invisible-trigger');
 
-        secretBtn.addEventListener('click', () => {
+        invisibleBtn.addEventListener('click', () => {
             clickCount++;
             
+            // Reset the timer on every click to keep the window open
             clearTimeout(clickTimer);
 
-            if (clickCount >= CLICK_THRESHOLD) {
+            if (clickCount >= 3) {
+                // Success! Trigger Modal
                 toggleLogin(true);
-                clickCount = 0; 
+                clickCount = 0;
             } else {
+                // If they stop clicking for 500ms, reset the count
                 clickTimer = setTimeout(() => {
                     clickCount = 0;
-                }, 800);
+                }, 500);
             }
         });
 
-        // FOR THE LOGIN LOGIC
+        // LOGIN SYSTEM LOGIC
         function toggleLogin(show) {
             const modal = document.getElementById('loginModal');
             modal.style.display = show ? 'flex' : 'none';
-            if(show) document.getElementById('adminPass').focus();
+            if(show) {
+                // Clear previous inputs/errors when opening
+                document.getElementById('adminPass').value = '';
+                document.getElementById('loginMsg').style.display = 'none';
+                document.getElementById('adminPass').focus();
+            }
         }
 
         function checkLogin() {
@@ -344,6 +364,8 @@
             } else {
                 errorMsg.style.display = 'block';
                 const box = document.querySelector('.login-box');
+                
+                // Shake Animation
                 box.style.transform = 'translateX(10px)';
                 setTimeout(() => box.style.transform = 'translateX(0)', 100);
                 setTimeout(() => box.style.transform = 'translateX(-10px)', 200);
@@ -351,6 +373,7 @@
             }
         }
 
+        // Allow "Enter" key to submit password
         document.getElementById('adminPass').addEventListener('keypress', function (e) {
             if (e.key === 'Enter') checkLogin();
         });
