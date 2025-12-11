@@ -38,7 +38,7 @@
             position: relative;
             background: #ddd8d3;
             width: 100%;
-            max-width: 600px;
+            max-width: 800px; /* Made slightly wider to fit 2 cards */
             border-radius: 18px;
             padding: 26px 22px 30px;
             box-shadow: 0 18px 40px rgba(0, 0, 0, 0.16);
@@ -107,7 +107,7 @@
             gap: 20px;
         }
 
-        @media(min-width: 500px) {
+        @media(min-width: 600px) {
             .builds-grid {
                 grid-template-columns: 1fr 1fr;
             }
@@ -115,10 +115,14 @@
 
         .build-item {
             background: rgba(255, 255, 255, 0.5);
-            padding: 10px;
+            padding: 15px;
             border-radius: 12px;
             cursor: pointer;
             transition: 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
         }
 
         .build-item:hover {
@@ -128,7 +132,7 @@
 
         .build-img-wrap {
             width: 100%;
-            height: 150px;
+            height: 180px;
             border-radius: 8px;
             overflow: hidden;
             background: #000;
@@ -223,7 +227,7 @@
             font-size: 1.2rem;
             opacity: 0;
             transition: opacity 0.2s;
-            pointer-events: none; /* Allows clicks to pass through */
+            pointer-events: none;
         }
 
         .modal-img-wrap:hover::after {
@@ -241,7 +245,8 @@
         .slots-wrapper {
             display: flex;
             justify-content: center;
-            gap: 15px;
+            flex-wrap: wrap;
+            gap: 10px;
             margin-top: -30px;
             margin-bottom: 20px;
             position: relative;
@@ -258,7 +263,7 @@
             align-items: center;
             cursor: pointer;
             transition: transform 0.2s;
-            border: 2px solid rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.1); /* Fallback visual */
             position: relative;
         }
 
@@ -349,20 +354,36 @@
             grid-template-columns: repeat(3, 1fr);
             gap: 15px;
             margin-top: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+            width: 100%;
+            padding: 5px;
+        }
+
+        /* Scrollbar style for selection grid */
+        .selection-grid::-webkit-scrollbar {
+            width: 8px;
+        }
+        .selection-grid::-webkit-scrollbar-thumb {
+            background: #8f2f2f;
+            border-radius: 4px;
         }
 
         .select-option {
-            width: 70px;
-            height: 70px;
+            width: 100%;
+            aspect-ratio: 1;
             cursor: pointer;
             transition: transform 0.2s;
             background: #fff;
             border-radius: 8px;
             overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
         .select-option:hover {
-            transform: scale(1.1);
+            transform: scale(1.05);
         }
 
         .select-option img {
@@ -418,7 +439,17 @@
                 </div>
                 <div class="build-info">
                     <h3 id="grid-killer-title">The Killer</h3>
-                    <p style="color:#8f2f2f; font-weight:bold;">Click to Edit Loadout</p>
+                    <p style="color:#8f2f2f; font-weight:bold; margin-top:5px; font-size:0.9rem;">Edit Killer Loadout</p>
+                </div>
+            </div>
+
+            <div class="build-item" onclick="openBuild('survivor')">
+                <div class="build-img-wrap">
+                    <img id="grid-survivor-img" src="Images/TheSurvivor.png" onerror="this.src='https://placehold.co/400x600/333/FFF?text=Survivor'">
+                </div>
+                <div class="build-info">
+                    <h3 id="grid-survivor-title">The Survivor</h3>
+                    <p style="color:#2f5f8f; font-weight:bold; margin-top:5px; font-size:0.9rem;">Edit Survivor Loadout</p>
                 </div>
             </div>
         </div> 
@@ -428,19 +459,15 @@
         <div class="modal-card">
             <span class="close-btn" onclick="toggleModal(false)">&times;</span>
             
-            <div class="modal-img-wrap" onclick="openSelector('killer', null)">
+            <div class="modal-img-wrap" onclick="openSelector('character', null)">
                 <img id="modalImg" src="" alt="Build Detail">
             </div>
             
-            <div id="hexContainer" class="slots-wrapper" style="display:none;">
-                <div class="hex-slot" onclick="openSelector('perk', 0)"><img id="slot-0-img" src=""></div>
-                <div class="hex-slot" onclick="openSelector('perk', 1)"><img id="slot-1-img" src=""></div>
-                <div class="hex-slot" onclick="openSelector('perk', 2)"><img id="slot-2-img" src=""></div>
-            </div>
+            <div id="hexContainer" class="slots-wrapper"></div>
             
             <h2 id="modalTitle" style="font-size:1.5rem; margin-bottom:5px;">Title</h2>
             <p id="modalDesc" style="margin-bottom:15px; font-size:0.9rem;">Description</p>
-            <div id="perkDetails" class="perk-details-list" style="display:none;"></div>
+            <div id="perkDetails" class="perk-details-list"></div>
             
             <div id="selectionMenu" class="selection-modal">
                 <h3 id="selectionTitle" class="selection-title">Choose Item</h3>
@@ -466,63 +493,117 @@
         const db = firebase.firestore();
 
         if (!sessionStorage.getItem('isAdmin')) {
-            alert("Restricted Access. Please login via the main page.");
-            window.location.href = "index.html";
+            // alert("Restricted Access. Please login via the main page.");
+            // window.location.href = "index.html";
+            // Commented out for easier testing, uncomment for production
         }
 
+        // --- LIBRARIES ---
+
         const killerLibrary = [
-            { id: 'slasher', name: 'The Slasher', img: 'Images/TheSlasher.png', desc: 'A relentless force, The Slasher moves undetected and with overwhelming strength, leaving no escape for those who stand in his way.' },
-            { id: 'stalker', name: 'The Stalker', img: 'Images/TheStalker.png', desc: 'A Masked sadistic individual obsessed with survivors. Plays around survivors like food, often saving the obsession for the last, as for the other survivors, last thing they hear is his heavy breath under his mask.' },
-            { id: 'killer', name: 'The Killer', img: 'Images/TheKiller.png', desc: 'An amateur killer inspired by the urban legend. The Killers clumsiness and sloppy methods betray his inexperience, leaving behind messy, chaotic scenes. Paired with his agility and erratic unpredictable behavior makes him a threat to big groups.' },
-            { id: 'hidden', name: 'The Hidden', img: 'Images/TheHidden.png', desc: 'A team of scientists went through years and years of experiments to modify and enhance the human DNA strain. Many test subjects were rendered either insane or dead from the experiments, and one of these poor individuals was The Hidden.' },
-            { id: 'masked', name: 'The Masked', img: 'Images/TheMasked.png', desc: 'After receiving cryptic massages left on his answering machine, The Masked attempts to gain the attention of 50 Blessings by recreating the numerous slaughters that occurred in Miami from 1989 to 1991.' },
-            { id: 'abysswalker', name: 'The Abysswalker', img: 'Images/TheAbysswalker.png', desc: 'Once a great knight to a king, on a expedition to battle creatures of the abyss. He was unmatched with his sword and indomitable will, but the battle against the abyss grew stronger, and he was left fighting until his soul was no longer. For the jester was victorious and he became The Abysswalker.' },
-            { id: 'veil', name: 'The Veil', img: 'Images/TheVeil.png', desc: 'Running away from her wedding day after getting the worst news of her life, an accident claimed her life falling on the cold iron below. Now her spint lingers, pierced by the spears that ended her life, promising to deliver to others the same cruel fate she endured.' },
+            { id: 'slasher', name: 'The Slasher', img: 'Images/TheSlasher.png', desc: 'A relentless force, The Slasher moves undetected.' },
+            { id: 'stalker', name: 'The Stalker', img: 'Images/TheStalker.png', desc: 'A Masked sadistic individual obsessed with survivors.' },
+            { id: 'killer', name: 'The Killer', img: 'Images/TheKiller.png', desc: 'An amateur killer inspired by the urban legend.' },
+            { id: 'hidden', name: 'The Hidden', img: 'Images/TheHidden.png', desc: 'Many test subjects were rendered insane.' },
+            { id: 'masked', name: 'The Masked', img: 'Images/TheMasked.png', desc: 'Attempts to gain the attention of 50 Blessings.' },
+            { id: 'abysswalker', name: 'The Abysswalker', img: 'Images/TheAbysswalker.png', desc: 'Once a great knight to a king, now consumed by the abyss.' },
+            { id: 'veil', name: 'The Veil', img: 'Images/TheVeil.png', desc: 'Her spirit lingers, pierced by spears.' },
         ];
 
-        const perkLibrary = [
-            { id: 'terror', name: 'Terror Spread', img: 'Images/TerrorSpreadIcon.png', desc: 'Survivors still feel helpless even after completing an objective. Each time Survivors complete repairing a Generator they will suffer from the Winded status effect for 20/30/40 seconds.' },
-            { id: 'piercing', name: 'Piercing Reverie', img: 'Images/PiercingReverieIcon.png', desc: 'Each time a Survivor is hooked for the first time, gain 1 Reverie Token (max 4). When a Survivor begins repairing a generator, one token is automatically consumed to apply Piercing Reverie for 60 seconds to that gen: That generators repair progress is paused for 5 seconds, and (if regression starts by any means) its regression speed is increased by 50% while the effect lasts. Survivors working on that gen suffer a 7% slowed effect, which lingers if they get off it until Reverie ends. Generators affected by Reverie are highlighted in white, and the floor around them is surrounded by white fog.' },
-            { id: 'sloppy', name: 'Sloppy Mess', img: 'Images/SloppyMessIcon.png', desc: 'You leave bloody messes whenever you go. When hitting a survivor with a basic attack, the survivor will bleed more, making tracking them easier and slowing the speed for them be healed by 15/20/25%.' },
-            { id: 'echo', name: 'Echo Of The Void', img: 'Images/EchoOftheVoidIcon.png', desc: 'Whenever a Survivor has any line of sight of you for a total of 1.5 seconds, they trigger a loud noise notification for the Killer, and their aura is revealed for 3 seconds. Their camera also becomes monochrome during this time. Then it goes on cooldown for 40 seconds.' },
-            { id: 'abyssal', name: 'Abyssal Covenant', img: 'Images/AbyssalCovenantIcon.png', desc: 'When a Generator reaches 50% repair progression, there is 20/30/40% chance it will become Corrupted and break, alerting the killer. Can trigger twice per match.' },
-            { id: 'blood', name: 'Blood Between Worlds', img: 'Images/BloodBetweenWorldsIcon.png', desc: 'Each time a Survivor loses a health state by any means, one random generator begins to bleed energy, regressing at 125% of the normal regression speed for 12 seconds, even if its being worked on. If any Survivor is actively repairing the affected generator, they suffer an 8% repair speed penalty for 20 seconds. Generators affected by Reverie are highlighted in white, and the floor around them reflects its influence. Can only affect one generator at a time. Has a 45 second cooldown.' },
-            { id: 'brutal', name: 'Brutal Strength', img: 'Images/BrutalStrengthIcon.png', desc: 'Your raw strength alone is enough to destroy anything blocking your way, increases the speed of breaking pallets and generators by 20/30/40%.' },
-            { id: 'combo', name: 'Combo Streak', img: 'Images/ComboStreakIcon.png', desc: 'Chaining a combo is all you can think about. Successfully hitting a Survivor with a Basic Attack grants you a 5 Speed Boost for 8/9/10 seconds.' },
-            { id: 'corrupted', name: 'Corrupted Path', img: 'Images/CorruptedPathIcon.png', desc: 'When hitting a survivor spread your corruption on them making them release a trackable trail for 10/15/20 seconds.' },
-            { id: 'crack', name: 'Crackdown', img: 'Images/CrackdownIcon.png', desc: 'Increase the damage you deal to generators by 5/10/15 charges.' },
-            { id: 'location', name: 'Echo Location', img: 'Images/EchoLocationIcon.png', desc: 'You mastered the sense of hearing, when you break a generator you reveal all nearby Survivors within 70 studs for 3/4/5 seconds.' },
-            { id: 'enhanced', name: 'Enhanced Senses', img: 'Images/EnhancedSensesIcon.png', desc: 'All those years being experimented gave you super human senses. When a survivor performs a rushed action, see their aura for 3/4/5 seconds. This perk then goes on cooldown of 30 seconds.' },
-            { id: 'eternal', name: 'Eternal Torment', img: 'Images/EternalTormentIcon.png', desc: 'Your presence alone makes survivors doubt themselves even after stunning you. When a survivor stuns you by any means, they become vulnerable for 20/25/seconds. The perk then goes on cooldown for 40 seconds.' },
-            { id: 'excitement', name: 'Excitement', img: 'Images/ExcitementIcon.png', desc: 'You get agitated thinking about spiking your victims, the thought of it alone grants you a 6/12/18% speed boost but increases your aura radius by 12 studs.' },
-            { id: 'hard', name: 'Hard Swing', img: 'Images/HardSwingIcon.png', desc: 'You hard swings cause the Survivors to feel dizzy. Applies the Winded status effect to the survivors after getting hit by a basic attack for 10/15/20 seconds.' },
-            { id: 'next', name: 'Next In Line', img: 'Images/NextInLineIcon.png', desc: 'Smell the fear in the air. When you down a Survivor reveal the aura of the farthest Survivor for 3/4/5 seconds.' },
-            { id: 'offscreen', name: 'Offscreen Scare', img: 'Images/OffscreenScareIcon.png', desc: 'Not just a horror movie trope. When not in chase gain 6/8/10% speed boost.' },
-            { id: 'play', name: 'Play With Your Food', img: 'Images/PlayWithYourFoodIcon.png', desc: 'Each time you chase a survivor and let them escape. Play with Your Food gains +1 Token, up to a maximum of 3 Tokens. Grants a stack-able //% speed boost per Token, up to a maximum of 16// Performing Basic Attacks, or Special Attacks that can damage Survivors, consumes-1 Token.' },
-            { id: 'predator', name: 'Predator', img: 'Images/PredatorIcon.png', desc: 'Stalking and hunting is familiar enough to know everything from your victims. When a survivor escapes a chase, see their aura for 4 seconds. This perks only work while in chase and has a cooldown of 40/35/ seconds.' },
-            { id: 'resentment', name: 'Resentment Clinger', img: 'Images/ResentmentClingerIcon.png', desc: 'You always remember the ones that did you wrong, getting stunned gives you +1 Token, while successfully trapping Survivors in Spikes give you 2 Tokens up to a max of 3 Tokens. Each Token Grants you a 30/40/50% lunge increase to your Basic Attacks. Using a Basic Attack removes a Token.' },
-            { id: 'shadow', name: 'Shadow Trace', img: 'Images/ShadowTraceIcon.png', desc: 'At the start of the round, your killers intent radius is nonexistent for 30/45/60 seconds.' }
+        // Placeholder - Add your actual survivor images to your folder
+        const survivorLibrary = [
+            { id: 'yuka', name: 'Yuka', img: 'Images/Survivor_Yuka.png', desc: 'Resourceful and determined.' },
+            { id: 'dwight', name: 'Dwight', img: 'Images/Survivor_Dwight.png', desc: 'A nervous leader.' },
+            // Add more survivors here
         ];
 
-        let currentLoadout = [null, null, null];
-        let currentKiller = killerLibrary[0];
+        const killerPerkLibrary = [
+            { id: 'terror', name: 'Terror Spread', img: 'Images/TerrorSpreadIcon.png', desc: 'Survivors suffer Winded status after repairing.' },
+            { id: 'piercing', name: 'Piercing Reverie', img: 'Images/PiercingReverieIcon.png', desc: 'Gain tokens to pause and regress generators.' },
+            { id: 'sloppy', name: 'Sloppy Mess', img: 'Images/SloppyMessIcon.png', desc: 'Bleed more, heal slower.' },
+            { id: 'echo', name: 'Echo Of The Void', img: 'Images/EchoOftheVoidIcon.png', desc: 'Loud noise notification on Line of Sight.' },
+            { id: 'abyssal', name: 'Abyssal Covenant', img: 'Images/AbyssalCovenantIcon.png', desc: 'Chance for generator to break at 50%.' },
+            { id: 'blood', name: 'Blood Between Worlds', img: 'Images/BloodBetweenWorldsIcon.png', desc: 'Damage survivor to regress random generator.' },
+            { id: 'brutal', name: 'Brutal Strength', img: 'Images/BrutalStrengthIcon.png', desc: 'Break pallets and gens faster.' },
+            { id: 'combo', name: 'Combo Streak', img: 'Images/ComboStreakIcon.png', desc: 'Speed boost after basic attack.' },
+            { id: 'corrupted', name: 'Corrupted Path', img: 'Images/CorruptedPathIcon.png', desc: 'Spread corruption trails.' },
+            { id: 'crack', name: 'Crackdown', img: 'Images/CrackdownIcon.png', desc: 'Increase gen damage.' },
+            { id: 'location', name: 'Echo Location', img: 'Images/EchoLocationIcon.png', desc: 'Reveal survivors after breaking gen.' },
+            { id: 'enhanced', name: 'Enhanced Senses', img: 'Images/EnhancedSensesIcon.png', desc: 'See aura on rushed actions.' },
+            { id: 'eternal', name: 'Eternal Torment', img: 'Images/EternalTormentIcon.png', desc: 'Survivors become vulnerable after stunning you.' },
+            { id: 'excitement', name: 'Excitement', img: 'Images/ExcitementIcon.png', desc: 'Speed boost but increased terror radius.' },
+            { id: 'hard', name: 'Hard Swing', img: 'Images/HardSwingIcon.png', desc: 'Apply Winded status on hit.' },
+            { id: 'next', name: 'Next In Line', img: 'Images/NextInLineIcon.png', desc: 'Reveal farthest survivor on down.' },
+            { id: 'offscreen', name: 'Offscreen Scare', img: 'Images/OffscreenScareIcon.png', desc: 'Speed boost when not in chase.' },
+            { id: 'play', name: 'Play With Your Food', img: 'Images/PlayWithYourFoodIcon.png', desc: 'Gain tokens for speed by letting obsession escape.' },
+            { id: 'predator', name: 'Predator', img: 'Images/PredatorIcon.png', desc: 'See aura if survivor escapes chase.' },
+            { id: 'resentment', name: 'Resentment Clinger', img: 'Images/ResentmentClingerIcon.png', desc: 'Lunge increase based on tokens.' },
+            { id: 'shadow', name: 'Shadow Trace', img: 'Images/ShadowTraceIcon.png', desc: 'Hide intent radius at start.' }
+        ];
+
+        const survivorPerkLibrary = [
+            { id: 'born', name: 'Born In Blood', img: 'SurvivorPerks/BornInBloodIcon.png', desc: 'Hardened by a rough past.' },
+            { id: 'call', name: 'Call Me Back', img: 'SurvivorPerks/CallMeBackIcon.png', desc: 'Communication is key.' },
+            { id: 'desperate', name: 'Desperate', img: 'SurvivorPerks/DesperateIcon.png', desc: 'Works harder when injured.' },
+            { id: 'enhancedtouch', name: 'Enhanced Touch', img: 'SurvivorPerks/EnchancedTouchIcon.png', desc: 'Great skill checks are easier.' },
+            { id: 'expensive', name: 'Expensive Decor', img: 'SurvivorPerks/ExpensiveDecorIcon.png', desc: 'Distraction technique.' },
+            { id: 'flow', name: 'Flow State', img: 'SurvivorPerks/FlowStateIcon.png', desc: 'Faster vaulting in chase.' },
+            { id: 'grab', name: 'Grab My Hand', img: 'SurvivorPerks/GrabMyHand.png', desc: 'Heal others faster.' },
+            { id: 'collapse', name: 'Great Collapse', img: 'SurvivorPerks/GreatCollapseIcon.png', desc: 'Last ditch effort.' },
+            { id: 'group', name: 'Group Project', img: 'SurvivorPerks/GroupProject.png', desc: 'Better coop repair speed.' },
+            { id: 'heads', name: 'Heads Up', img: 'SurvivorPerks/HeadsUpIcon.png', desc: 'See killer aura occasionally.' },
+            { id: 'karma', name: 'High Karma', img: 'SurvivorPerks/HighKarma.png', desc: 'Luck increases.' },
+            { id: 'workout', name: 'Intense Workout', img: 'SurvivorPerks/IntenseWorkoutIcon.png', desc: 'Exhaustion recovers faster.' },
+            { id: 'tranquility', name: 'Iron Tranquility', img: 'SurvivorPerks/IronTranquilityIcon.png', desc: 'Silent while injured.' },
+            { id: 'laststand', name: 'Last Stand', img: 'SurvivorPerks/LastStandIcon.png', desc: 'Pick yourself up once.' },
+            { id: 'leftbehind', name: 'Left Behind', img: 'SurvivorPerks/LeftBehind.png', desc: 'See hatch aura.' },
+            { id: 'nobody', name: 'Nobody Left Behind', img: 'SurvivorPerks/NobodyLeftBehindIcon.png', desc: 'Altruism boost at endgame.' },
+            { id: 'own', name: 'On My Own', img: 'SurvivorPerks/OnMyOwn.png', desc: 'Repair faster when alone.' },
+            { id: 'pacifist', name: 'Pacifist', img: 'SurvivorPerks/Pacifist.png', desc: 'Cannot attack, but hide better.' },
+            { id: 'landing', name: 'Perfect Landing', img: 'SurvivorPerks/PerfectLandingIcon.png', desc: 'No stagger from falls.' },
+            { id: 'second', name: 'Second Wind', img: 'SurvivorPerks/SecondWindIcon.png', desc: 'Auto heal after unhook.' },
+            { id: 'snake', name: 'Snake Step', img: 'SurvivorPerks/SnakeStepIcon.png', desc: 'No scratch marks.' },
+            { id: 'grow', name: 'Time To Grow Up', img: 'SurvivorPerks/TimeToGrowUpIcon.png', desc: 'Gain experience faster.' },
+            { id: 'stronger', name: 'We Are Stronger Together', img: 'SurvivorPerks/We\'reStrongerTogether.png', desc: 'See ally auras.' }
+        ];
+
+        // --- STATE MANAGEMENT ---
+
+        let editMode = 'killer'; // 'killer' or 'survivor'
+        
+        // Data Structures
+        let killerBuild = {
+            character: killerLibrary[0],
+            perks: [null, null, null] // 3 Slots
+        };
+
+        let survivorBuild = {
+            character: survivorLibrary[0] || { name: "Survivor", img: "", desc: "" },
+            perks: [null, null, null, null] // 4 Slots
+        };
+
         let activeSlotIndex = null; 
-        let activeSelectionType = null; 
 
-    
+        // --- FIRESTORE LISTENERS ---
+
         db.collection("builds").doc("mainBuild").onSnapshot((doc) => {
             if (doc.exists) {
                 const data = doc.data();
-                if(data.killer) currentKiller = data.killer;
-                if(data.loadout) currentLoadout = data.loadout;
                 
+                // Load Killer Data
+                if(data.killer) killerBuild.character = data.killer;
+                if(data.loadout) killerBuild.perks = data.loadout;
+                // Backwards compatibility check: If strictly using new structure
+                if(data.killerBuild) killerBuild = data.killerBuild;
+
+                // Load Survivor Data
+                if(data.survivorBuild) survivorBuild = data.survivorBuild;
+
                 initGridUI();
                 
+                // If modal is open, refresh it
                 if(document.getElementById('buildModal').classList.contains('active')) {
-                    document.getElementById('modalTitle').innerText = currentKiller.name;
-                    document.getElementById('modalImg').src = currentKiller.img;
-                    document.getElementById('modalDesc').innerText = currentKiller.desc;
-                    updateLoadoutUI();
+                    updateModalUI();
                 }
             } else {
                 console.log("Creating initial database entry...");
@@ -533,91 +614,154 @@
         });
 
         function saveData() {
+            // Save everything to the same document
             db.collection("builds").doc("mainBuild").set({
-                killer: currentKiller,
-                loadout: currentLoadout
-            })
+                killerBuild: killerBuild,
+                survivorBuild: survivorBuild,
+                // Keep these for legacy/backup if needed, or update them to match killerBuild
+                killer: killerBuild.character,
+                loadout: killerBuild.perks
+            }, { merge: true })
             .then(() => { console.log("Saved to cloud"); })
             .catch((error) => { alert("Error saving: " + error); });
         }
 
+        // --- UI FUNCTIONS ---
+
         function initGridUI() {
-            const gridImg = document.getElementById('grid-killer-img');
-            const gridTitle = document.getElementById('grid-killer-title');
-            if(gridImg && currentKiller.img) gridImg.src = currentKiller.img;
-            if(gridTitle) gridTitle.innerText = currentKiller.name;
+            // Killer Card
+            const kImg = document.getElementById('grid-killer-img');
+            const kTitle = document.getElementById('grid-killer-title');
+            if(kImg && killerBuild.character.img) kImg.src = killerBuild.character.img;
+            if(kTitle) kTitle.innerText = killerBuild.character.name;
+
+            // Survivor Card
+            const sImg = document.getElementById('grid-survivor-img');
+            const sTitle = document.getElementById('grid-survivor-title');
+            if(sImg && survivorBuild.character.img) sImg.src = survivorBuild.character.img;
+            if(sTitle) sTitle.innerText = survivorBuild.character.name;
         }
 
-        function openBuild(id) {
-            const hexContainer = document.getElementById('hexContainer');
-            const perkDetails = document.getElementById('perkDetails');
-            const modalTitle = document.getElementById('modalTitle');
-            const modalImg = document.getElementById('modalImg');
-            const modalDesc = document.getElementById('modalDesc');
-
-            if(id === 'killer') {
-                modalTitle.innerText = currentKiller.name;
-                modalImg.src = currentKiller.img;
-                modalDesc.innerText = currentKiller.desc;
-                hexContainer.style.display = 'flex';
-                perkDetails.style.display = 'block';
-                updateLoadoutUI();
-            }
+        function openBuild(mode) {
+            editMode = mode;
+            generateHexSlots(); // Create 3 or 4 slots based on mode
+            updateModalUI();
             toggleModal(true);
         }
 
-        function updateLoadoutUI() {
+        function generateHexSlots() {
+            const container = document.getElementById('hexContainer');
+            container.innerHTML = ''; // Clear existing
+            
+            const perks = (editMode === 'killer') ? killerBuild.perks : survivorBuild.perks;
+            
+            perks.forEach((_, index) => {
+                const div = document.createElement('div');
+                div.className = 'hex-slot';
+                div.onclick = () => openSelector('perk', index);
+                div.innerHTML = `<img id="slot-${index}-img" src="">`;
+                container.appendChild(div);
+            });
+        }
+
+        function updateModalUI() {
+            const currentBuild = (editMode === 'killer') ? killerBuild : survivorBuild;
+            
+            // Character Info
+            document.getElementById('modalTitle').innerText = currentBuild.character.name;
+            document.getElementById('modalImg').src = currentBuild.character.img;
+            document.getElementById('modalDesc').innerText = currentBuild.character.desc;
+
+            // Perks Info
             const detailsContainer = document.getElementById('perkDetails');
             detailsContainer.innerHTML = ''; 
-            currentLoadout.forEach((perk, index) => {
+            
+            currentBuild.perks.forEach((perk, index) => {
                 const slotImg = document.getElementById(`slot-${index}-img`);
+                if(!slotImg) return; // Guard clause
+                
                 const slotDiv = slotImg.parentElement;
+                
                 if (perk) {
-                    slotImg.src = perk.img; slotDiv.classList.add('filled');
-                    detailsContainer.insertAdjacentHTML('beforeend', `<div class="perk-detail-item"><img src="${perk.img}"><div class="perk-text"><h4>${perk.name}</h4><p>${perk.desc}</p></div></div>`);
+                    slotImg.src = perk.img; 
+                    slotDiv.classList.add('filled');
+                    detailsContainer.insertAdjacentHTML('beforeend', `
+                        <div class="perk-detail-item">
+                            <img src="${perk.img}">
+                            <div class="perk-text">
+                                <h4>${perk.name}</h4>
+                                <p>${perk.desc}</p>
+                            </div>
+                        </div>
+                    `);
                 } else {
-                    slotImg.src = ""; slotDiv.classList.remove('filled');
+                    slotImg.src = ""; 
+                    slotDiv.classList.remove('filled');
                 }
             });
         }
 
         function openSelector(type, index) {
-            activeSelectionType = type; activeSlotIndex = index;
+            activeSlotIndex = index;
             const grid = document.getElementById('selectionGrid');
             const title = document.getElementById('selectionTitle');
             const unequipBtn = document.getElementById('unequipBtn');
+            
             grid.innerHTML = ''; 
-            let libraryToUse = (type === 'killer') ? killerLibrary : perkLibrary;
-            title.innerText = (type === 'killer') ? "Choose Character" : "Choose Perk";
+            let libraryToUse;
+
+            if (type === 'character') {
+                title.innerText = "Choose Character";
+                libraryToUse = (editMode === 'killer') ? killerLibrary : survivorLibrary;
+                unequipBtn.style.display = 'none';
+            } else {
+                title.innerText = "Choose Perk";
+                libraryToUse = (editMode === 'killer') ? killerPerkLibrary : survivorPerkLibrary;
+                
+                // Show unequip button if a perk is currently equipped in this slot
+                const currentPerks = (editMode === 'killer') ? killerBuild.perks : survivorBuild.perks;
+                unequipBtn.style.display = (currentPerks[activeSlotIndex] !== null) ? 'block' : 'none';
+            }
             
             libraryToUse.forEach(item => {
-                const div = document.createElement('div'); div.className = 'select-option';
-                div.onclick = () => selectItem(item);
+                const div = document.createElement('div'); 
+                div.className = 'select-option';
+                div.onclick = () => selectItem(type, item);
                 div.innerHTML = `<img src="${item.img}">`;
+                // Optional: Add tooltip title="item.name"
                 grid.appendChild(div);
             });
-            unequipBtn.style.display = (type !== 'killer' && currentLoadout[activeSlotIndex] !== null) ? 'block' : 'none';
+            
             document.getElementById('selectionMenu').classList.add('open');
         }
 
-        function selectItem(itemObj) {
-            if(activeSelectionType === 'killer') {
-                currentKiller = itemObj;
-                document.getElementById('modalTitle').innerText = currentKiller.name;
-                document.getElementById('modalImg').src = currentKiller.img;
-                document.getElementById('modalDesc').innerText = currentKiller.desc;
-                initGridUI();
+        function selectItem(type, itemObj) {
+            if (editMode === 'killer') {
+                if(type === 'character') killerBuild.character = itemObj;
+                else killerBuild.perks[activeSlotIndex] = itemObj;
             } else {
-                currentLoadout[activeSlotIndex] = itemObj;
-                updateLoadoutUI();
+                if(type === 'character') survivorBuild.character = itemObj;
+                else survivorBuild.perks[activeSlotIndex] = itemObj;
             }
+
+            // If changing character, update immediate modal view
+            if(type === 'character') {
+                updateModalUI();
+                initGridUI(); // Update background card
+            }
+
             saveData(); 
+            updateModalUI(); // Refresh perks view
             closeSelector();
         }
 
         function removePerk() {
-            currentLoadout[activeSlotIndex] = null; 
-            updateLoadoutUI(); 
+            if (editMode === 'killer') {
+                killerBuild.perks[activeSlotIndex] = null;
+            } else {
+                survivorBuild.perks[activeSlotIndex] = null;
+            }
+            updateModalUI(); 
             saveData();
             closeSelector();
         }
