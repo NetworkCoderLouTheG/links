@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Yuka's Builds</title>
-
+    
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
 
@@ -22,13 +22,14 @@
 
         body {
             font-family: 'Cleanow', sans-serif;
-            background: #f0e6dd;
+            background: #e0d6cd;
             color: #181818;
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: flex-start;
             padding: 16px;
+            border-top: 5px solid #8f2f2f;
         }
 
         .card {
@@ -36,7 +37,7 @@
             position: relative;
             background: #ddd8d3;
             width: 100%;
-            max-width: 600px;
+            max-width: 800px;
             border-radius: 18px;
             padding: 26px 22px 30px;
             box-shadow: 0 18px 40px rgba(0, 0, 0, 0.16);
@@ -94,7 +95,7 @@
             gap: 20px;
         }
 
-        @media(min-width: 500px) {
+        @media(min-width: 600px) {
             .builds-grid {
                 grid-template-columns: 1fr 1fr;
             }
@@ -102,10 +103,14 @@
 
         .build-item {
             background: rgba(255, 255, 255, 0.5);
-            padding: 10px;
+            padding: 15px;
             border-radius: 12px;
             cursor: pointer;
             transition: 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
         }
 
         .build-item:hover {
@@ -115,7 +120,7 @@
 
         .build-img-wrap {
             width: 100%;
-            height: 150px;
+            height: 180px;
             border-radius: 8px;
             overflow: hidden;
             background: #000;
@@ -126,6 +131,7 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
+            object-position: top center;
         }
 
         /* MODAL */
@@ -178,7 +184,7 @@
             z-index: 10;
         }
 
-        /* READ-ONLY IMAGE */
+        /* --- FIXED EDITABLE IMAGE (Read Only Version) --- */
         .modal-img-wrap {
             width: 100%;
             height: 250px;
@@ -187,26 +193,32 @@
             margin-bottom: 15px;
             background: #000;
             position: relative;
+            cursor: default; /* No pointer */
+            border: 2px solid transparent;
+            z-index: 2;
         }
 
         .modal-img-wrap img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            object-position: top center;
+            object-position: top center; /* This ensures the half-body view on the viewer as well */
         }
 
-        /* READ-ONLY SLOTS */
+        /* SLOT CONTAINER */
         .slots-wrapper {
             display: flex;
             justify-content: center;
+            flex-wrap: wrap;
             gap: 15px;
-            margin-top: -30px;
+            margin-top: 15px; 
             margin-bottom: 20px;
             position: relative;
             z-index: 5;
+            align-items: center;
         }
 
+        /* HEXAGON SLOT */
         .hex-slot {
             width: 70px;
             height: 70px;
@@ -215,31 +227,129 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            cursor: default; /* No pointer cursor */
-            border: 2px solid rgba(255, 255, 255, 0.1);
+            cursor: default; /* Read only */
+            transition: transform 0.2s;
+            border: 2px solid rgba(255, 255, 255, 0.1); 
             position: relative;
+            overflow: hidden; 
+        }
+
+        .hex-slot:hover {
+            transform: scale(1.1);
+            background: #3a3a3a;
         }
 
         .hex-slot img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            transform: scale(1.35); /* Maximized Image */
             clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
             display: none;
         }
 
-        .hex-slot.filled img {
+        /* SQUARE ITEM SLOT */
+        .item-slot {
+            width: 70px;
+            height: 70px;
+            background: #2a2a2a;
+            border-radius: 8px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: default; /* Read only */
+            transition: transform 0.2s;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            margin-left: 30px;
+            overflow: hidden;
+        }
+
+        /* VERTICAL SEPARATOR LINE */
+        .item-slot::before {
+            content: "";
+            position: absolute;
+            left: -16px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 2px;
+            height: 40px;
+            background: rgba(0, 0, 0, 0.2);
+            pointer-events: none;
+        }
+
+        .item-slot:hover {
+            transform: scale(1.1);
+            background: #3a3a3a;
+            border-color: #8f2f2f;
+        }
+
+        .item-slot img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 6px;
+            display: none;
+            transform: scale(1.25);
+        }
+
+        /* PLUS SIGN REMOVED FOR VIEWER */
+        .hex-slot::after, .item-slot::after {
+            content: "";
+            display: none;
+        }
+
+        .hex-slot.filled img, .item-slot.filled img {
             display: block;
         }
 
-        /* No plus sign for read-only mode */
-        .hex-slot::after {
-            content: "";
+        /* --- KILLER POWER SECTION --- */
+        .killer-powers-wrapper {
+            margin: 10px 0 20px 0;
+            display: none;
+            flex-direction: column;
+            gap: 10px;
         }
 
+        .power-entry {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            gap: 15px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 8px;
+            padding: 10px;
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .power-icon {
+            width: 60px;
+            height: 60px;
+            object-fit: contain;
+            flex-shrink: 0;
+        }
+
+        .power-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .power-info h4 {
+            font-size: 1.1rem;
+            color: #8f2f2f;
+            margin-bottom: 2px;
+        }
+
+        .power-info p {
+            font-size: 0.85rem;
+            color: #4a4139;
+            line-height: 1.2;
+        }
+
+        /* DETAILS LIST */
         .perk-details-list {
             margin-top: 10px;
-            border-top: 1px solid rgba(0, 0, 0, 0.1);
             padding-top: 10px;
         }
 
@@ -249,6 +359,13 @@
             border-bottom: 1px dashed rgba(0, 0, 0, 0.1);
             display: flex;
             gap: 10px;
+        }
+        
+        .perk-detail-item.is-item {
+            background: rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: 8px;
+            padding: 10px;
         }
 
         .perk-detail-item img {
@@ -284,7 +401,17 @@
                 </div>
                 <div class="build-info">
                     <h3 id="grid-killer-title">The Killer</h3>
-                    <p>My Main Loadout</p>
+                    <p style="color:#8f2f2f; font-weight:bold; margin-top:5px; font-size:0.9rem;">View Killer Loadout</p>
+                </div>
+            </div>
+
+            <div class="build-item" onclick="openBuild('survivor')">
+                <div class="build-img-wrap">
+                    <img id="grid-survivor-img" src="Images/TheSurvivor.png" onerror="this.src='https://placehold.co/400x600/333/FFF?text=Survivor'">
+                </div>
+                <div class="build-info">
+                    <h3 id="grid-survivor-title">The Survivor</h3>
+                    <p style="color:#2f5f8f; font-weight:bold; margin-top:5px; font-size:0.9rem;">View Survivor Loadout</p>
                 </div>
             </div>
         </div> 
@@ -297,16 +424,15 @@
             <div class="modal-img-wrap">
                 <img id="modalImg" src="" alt="Build Detail">
             </div>
-
-            <div id="hexContainer" class="slots-wrapper" style="display:none;">
-                <div class="hex-slot"><img id="slot-0-img" src=""></div>
-                <div class="hex-slot"><img id="slot-1-img" src=""></div>
-                <div class="hex-slot"><img id="slot-2-img" src=""></div>
-            </div>
-
+            
+            <div id="hexContainer" class="slots-wrapper"></div>
+            
             <h2 id="modalTitle" style="font-size:1.5rem; margin-bottom:5px;">Title</h2>
-            <p id="modalDesc" style="margin-bottom:15px; font-size:0.9rem;">Description</p>
-            <div id="perkDetails" class="perk-details-list" style="display:none;"></div>
+            <p id="modalDesc" style="margin-bottom:10px; font-size:0.9rem;">Description</p>
+            
+            <div id="killerPowerSection" class="killer-powers-wrapper"></div>
+
+            <div id="perkDetails" class="perk-details-list"></div>
         </div>
     </div>
 
@@ -324,87 +450,211 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        let currentLoadout = [null, null, null];
-        let currentKiller = { name: 'Loading...', img: 'Images/TheKiller.png', desc: '' }; 
+        // --- STATE MANAGEMENT ---
+        let editMode = 'killer'; 
+        
+        let killerBuild = {
+            character: { name: "", img: "", desc: "" },
+            perks: [null, null, null] 
+        };
 
+        let survivorBuild = {
+            character: { name: "Survivor", img: "Images/TheSurvivor.png", desc: "A survivor trying to escape." },
+            perks: [null, null, null], 
+            item: null,
+            robloxId: "" 
+        };
 
+        // --- FIRESTORE LISTENER (READ ONLY) ---
         db.collection("builds").doc("mainBuild").onSnapshot((doc) => {
             if (doc.exists) {
                 const data = doc.data();
-                if(data.killer) currentKiller = data.killer;
-                if(data.loadout) currentLoadout = data.loadout;
-                
+                if(data.killerBuild) killerBuild = data.killerBuild;
+
+                if(data.survivorBuild) {
+                    survivorBuild = data.survivorBuild;
+                    // Backward compatibility
+                    if(survivorBuild.perks.length === 4) {
+                        survivorBuild.perks.pop(); 
+                        survivorBuild.item = null; 
+                    }
+                }
                 initGridUI();
                 
+                // If modal is open, refresh it in real-time
                 if(document.getElementById('buildModal').classList.contains('active')) {
-                    document.getElementById('modalTitle').innerText = currentKiller.name;
-                    document.getElementById('modalImg').src = currentKiller.img;
-                    document.getElementById('modalDesc').innerText = currentKiller.desc;
-                    updateLoadoutUI();
+                    updateModalUI();
                 }
-            } else {
-                console.log("No data found in cloud yet.");
             }
         }, (error) => {
             console.error("Error reading DB:", error);
         });
 
-
-        function initGridUI() {
-            const gridImg = document.getElementById('grid-killer-img');
-            const gridTitle = document.getElementById('grid-killer-title');
-            if(gridImg && currentKiller.img) gridImg.src = currentKiller.img;
-            if(gridTitle) gridTitle.innerText = currentKiller.name;
+        async function fetchRobloxAvatar(userId) {
+             // Reverted to the full-body avatar endpoint to match admin.html
+             const apiUrl = `https://thumbnails.roproxy.com/v1/users/avatar?userIds=${userId}&size=420x420&format=Png&isCircular=false`;
+             try {
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+                if (data.data && data.data.length > 0 && data.data[0].imageUrl) {
+                    return data.data[0].imageUrl;
+                }
+             } catch (e) {
+                 console.error("Failed to fetch avatar", e);
+             }
+             return "Images/TheSurvivor.png"; 
         }
 
-        function openBuild(id) {
-            const hexContainer = document.getElementById('hexContainer');
-            const perkDetails = document.getElementById('perkDetails');
-            const modalTitle = document.getElementById('modalTitle');
-            const modalImg = document.getElementById('modalImg');
-            const modalDesc = document.getElementById('modalDesc');
+        function initGridUI() {
+            const kImg = document.getElementById('grid-killer-img');
+            const kTitle = document.getElementById('grid-killer-title');
+            if(kImg && killerBuild.character.img) kImg.src = killerBuild.character.img;
+            if(kTitle) kTitle.innerText = killerBuild.character.name;
 
-            if(id === 'killer') {
-                modalTitle.innerText = currentKiller.name;
-                modalImg.src = currentKiller.img;
-                modalDesc.innerText = currentKiller.desc;
-                
-                hexContainer.style.display = 'flex';
-                perkDetails.style.display = 'block';
-                updateLoadoutUI();
+            const sImg = document.getElementById('grid-survivor-img');
+            const sTitle = document.getElementById('grid-survivor-title');
+            if(sTitle) sTitle.innerText = survivorBuild.character.name || "Survivor";
+
+            if (survivorBuild.robloxId) {
+                fetchRobloxAvatar(survivorBuild.robloxId).then(url => {
+                    if(url && sImg) sImg.src = url;
+                });
+            } else {
+                sImg.src = "Images/TheSurvivor.png";
             }
+        }
+
+        function openBuild(mode) {
+            editMode = mode;
+            generateSlots(); 
+            updateModalUI();
             toggleModal(true);
         }
 
-        function updateLoadoutUI() {
-            const detailsContainer = document.getElementById('perkDetails');
-            detailsContainer.innerHTML = ''; 
-            currentLoadout.forEach((perk, index) => {
-                const slotImg = document.getElementById(`slot-${index}-img`);
-                if(!slotImg) return;
-                const slotDiv = slotImg.parentElement;
-
-                if (perk) {
-                    slotImg.src = perk.img;
-                    slotDiv.classList.add('filled');
-                    detailsContainer.insertAdjacentHTML('beforeend', `<div class="perk-detail-item"><img src="${perk.img}"><div class="perk-text"><h4>${perk.name}</h4><p>${perk.desc}</p></div></div>`);
-                } else {
-                    slotImg.src = "";
-                    slotDiv.classList.remove('filled');
-                }
+        function generateSlots() {
+            const container = document.getElementById('hexContainer');
+            container.innerHTML = ''; 
+            
+            const perks = (editMode === 'killer') ? killerBuild.perks : survivorBuild.perks;
+            
+            // Generate Hexagons (No Onclick)
+            perks.forEach((_, index) => {
+                const div = document.createElement('div');
+                div.className = 'hex-slot';
+                div.innerHTML = `<img id="slot-${index}-img" src="">`;
+                container.appendChild(div);
             });
-        }
 
-        function closeModal(event) {
-            if (event.target.classList.contains('modal-overlay')) {
-                toggleModal(false);
+            // Generate Square (No Onclick) - Survivor Only
+            if (editMode === 'survivor') {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'item-slot'; 
+                itemDiv.innerHTML = `<img id="slot-item-img" src="">`;
+                container.appendChild(itemDiv);
             }
         }
 
-        function toggleModal(show) {
-            const modal = document.getElementById('buildModal');
-            show ? modal.classList.add('active') : modal.classList.remove('active');
+        async function updateModalUI() {
+            const currentBuild = (editMode === 'killer') ? killerBuild : survivorBuild;
+            const modalImg = document.getElementById('modalImg');
+
+            // 1. Killer Logic
+            if (editMode === 'killer') {
+                document.getElementById('modalTitle').innerText = currentBuild.character.name;
+                document.getElementById('modalDesc').innerText = currentBuild.character.desc;
+                modalImg.src = currentBuild.character.img;
+                
+                // Show power section
+                const powerSection = document.getElementById('killerPowerSection');
+                powerSection.innerHTML = ''; 
+                if (currentBuild.character.powers && currentBuild.character.powers.length > 0) {
+                    powerSection.style.display = 'flex';
+                    currentBuild.character.powers.forEach(power => {
+                        const powerDiv = document.createElement('div');
+                        powerDiv.className = 'power-entry';
+                        powerDiv.innerHTML = `
+                            <img class="power-icon" src="${power.img}">
+                            <div class="power-info">
+                                <h4>${power.name}</h4>
+                                <p>${power.desc}</p>
+                            </div>
+                        `;
+                        powerSection.appendChild(powerDiv);
+                    });
+                } else {
+                    powerSection.style.display = 'none';
+                }
+            } 
+            
+            // 2. Survivor Logic
+            else {
+                document.getElementById('modalTitle').innerText = "The Survivor";
+                document.getElementById('modalDesc').innerText = "A survivor trying to escape.";
+                document.getElementById('killerPowerSection').style.display = 'none';
+
+                if (survivorBuild.robloxId) {
+                    // Use the full-body fetcher
+                    const url = await fetchRobloxAvatar(survivorBuild.robloxId);
+                    modalImg.src = url;
+                } else {
+                    modalImg.src = "Images/TheSurvivor.png";
+                }
+            }
+
+            // 3. Render Perks (Common)
+            const detailsContainer = document.getElementById('perkDetails');
+            detailsContainer.innerHTML = ''; 
+            
+            currentBuild.perks.forEach((perk, index) => {
+                const slotImg = document.getElementById(`slot-${index}-img`);
+                if(!slotImg) return; 
+                
+                const slotDiv = slotImg.parentElement;
+                
+                if (perk) {
+                    slotImg.src = perk.img; 
+                    slotDiv.classList.add('filled');
+                    detailsContainer.insertAdjacentHTML('beforeend', `
+                        <div class="perk-detail-item">
+                            <img src="${perk.img}">
+                            <div class="perk-text">
+                                <h4>${perk.name}</h4>
+                                <p>${perk.desc}</p>
+                            </div>
+                        </div>
+                    `);
+                } else {
+                    slotImg.src = ""; 
+                    slotDiv.classList.remove('filled');
+                }
+            });
+
+            if (editMode === 'survivor') {
+                const itemImg = document.getElementById('slot-item-img');
+                const itemDiv = itemImg.parentElement;
+                const item = survivorBuild.item;
+
+                if (item) {
+                    itemImg.src = item.img;
+                    itemDiv.classList.add('filled');
+                    detailsContainer.insertAdjacentHTML('beforeend', `
+                        <div class="perk-detail-item is-item">
+                            <img src="${item.img}">
+                            <div class="perk-text">
+                                <h4 style="color:#2f5f8f;">ITEM: ${item.name}</h4>
+                                <p>${item.desc}</p>
+                            </div>
+                        </div>
+                    `);
+                } else {
+                    itemImg.src = "";
+                    itemDiv.classList.remove('filled');
+                }
+            }
         }
+
+        function closeModal(event) { if (event.target.classList.contains('modal-overlay')) toggleModal(false); }
+        function toggleModal(show) { const modal = document.getElementById('buildModal'); show ? modal.classList.add('active') : modal.classList.remove('active'); }
     </script>
 </body>
 </html>
