@@ -138,10 +138,12 @@
             margin-bottom: 10px;
         }
 
+        /* UPDATED: Added object-position to shift image downwards/focus on top */
         .build-img-wrap img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            object-position: top center;
         }
 
         /* MODAL */
@@ -307,7 +309,7 @@
             transition: transform 0.2s;
             border: 2px solid rgba(255, 255, 255, 0.1); 
             position: relative;
-            overflow: hidden; /* Ensures scale doesn't spill out */
+            overflow: hidden; 
         }
 
         .hex-slot:hover {
@@ -320,7 +322,7 @@
             height: 100%;
             object-fit: cover;
             /* Scale up to maximize space inside the hexagon */
-            transform: scale(1.95); 
+            transform: scale(1.8); 
             clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
             display: none;
         }
@@ -369,7 +371,7 @@
             border-radius: 6px;
             display: none;
             /* Scale up slightly to fit better */
-            transform: scale(1);
+            transform: scale(1.25);
         }
 
         /* PLUS SIGN FOR BOTH */
@@ -812,7 +814,7 @@
             character: { name: "Survivor", img: "Images/TheSurvivor.png", desc: "A survivor trying to escape." }, // Default Fallback
             perks: [null, null, null], 
             item: null,
-            robloxId: "" 
+            robloxId: "2548263810" // DEFAULT ROBLOX ID
         };
 
         let activeSlotIndex = null; 
@@ -867,11 +869,15 @@
             const sTitle = document.getElementById('grid-survivor-title');
             if(sTitle) sTitle.innerText = survivorBuild.character.name || "Survivor";
 
-            // UPDATED ROBLOX LOGIC
+            // UPDATED: Check for Roblox Avatar in Grid
             if (survivorBuild.robloxId) {
-                sImg.src = `https://www.roblox.com/avatar-thumbnail/image?userId=${survivorBuild.robloxId}&width=420&height=420&format=png`;
+                // If we have an ID, we try to fetch via proxy first to get the CDN link
+                // But for the GRID (background), we can try to use a lazy fetch or just let the modal handle the full fetch.
+                // To keep it simple in the grid, we will trigger the async fetch here as well.
+                fetchRobloxAvatar(survivorBuild.robloxId).then(url => {
+                    if(url && sImg) sImg.src = url;
+                });
             } else {
-                // Fallback to default image if no ID
                 sImg.src = "Images/TheSurvivor.png";
             }
         }
@@ -906,7 +912,21 @@
             }
         }
 
-        function updateModalUI() {
+        async function fetchRobloxAvatar(userId) {
+             const apiUrl = `https://thumbnails.roproxy.com/v1/users/avatar?userIds=${userId}&size=420x420&format=Png&isCircular=false`;
+             try {
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+                if (data.data && data.data.length > 0 && data.data[0].imageUrl) {
+                    return data.data[0].imageUrl;
+                }
+             } catch (e) {
+                 console.error("Failed to fetch avatar", e);
+             }
+             return "Images/TheSurvivor.png"; // Fallback
+        }
+
+        async function updateModalUI() {
             const currentBuild = (editMode === 'killer') ? killerBuild : survivorBuild;
             const modalImg = document.getElementById('modalImg');
             const robloxInputDiv = document.getElementById('robloxInputContainer');
@@ -960,7 +980,9 @@
                 document.getElementById('robloxIdInput').value = survivorBuild.robloxId || "";
 
                 if (survivorBuild.robloxId) {
-                    modalImg.src = `https://www.roblox.com/avatar-thumbnail/image?userId=${survivorBuild.robloxId}&width=420&height=420&format=png`;
+                    // Fetch via Proxy
+                    const url = await fetchRobloxAvatar(survivorBuild.robloxId);
+                    modalImg.src = url;
                 } else {
                     modalImg.src = "Images/TheSurvivor.png";
                 }
@@ -1019,15 +1041,17 @@
         }
 
         // --- NEW FUNCTION: SAVE ROBLOX ID ---
-        function loadRobloxAvatar() {
+        async function loadRobloxAvatar() {
             const inputVal = document.getElementById('robloxIdInput').value.trim();
+            if(!inputVal) return;
+
             survivorBuild.robloxId = inputVal;
             
-            // Just trigger a UI update and Save
-            updateModalUI();
+            // Trigger UI update
+            await updateModalUI();
             saveData();
             
-            // Also update the background grid immediately
+            // Update grid
             initGridUI();
         }
 
