@@ -493,115 +493,104 @@
         const db = firebase.firestore();
 
         if (!sessionStorage.getItem('isAdmin')) {
-            // alert("Restricted Access. Please login via the main page.");
-            // window.location.href = "index.html";
-            // Commented out for easier testing, uncomment for production
+            
         }
 
-        // --- LIBRARIES ---
 
         const killerLibrary = [
-            { id: 'slasher', name: 'The Slasher', img: 'Images/TheSlasher.png', desc: 'A relentless force, The Slasher moves undetected.' },
-            { id: 'stalker', name: 'The Stalker', img: 'Images/TheStalker.png', desc: 'A Masked sadistic individual obsessed with survivors.' },
-            { id: 'killer', name: 'The Killer', img: 'Images/TheKiller.png', desc: 'An amateur killer inspired by the urban legend.' },
-            { id: 'hidden', name: 'The Hidden', img: 'Images/TheHidden.png', desc: 'Many test subjects were rendered insane.' },
-            { id: 'masked', name: 'The Masked', img: 'Images/TheMasked.png', desc: 'Attempts to gain the attention of 50 Blessings.' },
-            { id: 'abysswalker', name: 'The Abysswalker', img: 'Images/TheAbysswalker.png', desc: 'Once a great knight to a king, now consumed by the abyss.' },
-            { id: 'veil', name: 'The Veil', img: 'Images/TheVeil.png', desc: 'Her spirit lingers, pierced by spears.' },
+            { id: 'slasher', name: 'The Slasher', img: 'Images/Killers/TheSlasher.png', desc: 'A relentless force, The Slasher moves undetected.' },
+            { id: 'stalker', name: 'The Stalker', img: 'Images/Killers/TheStalker.png', desc: 'A Masked sadistic individual obsessed with survivors.' },
+            { id: 'killer', name: 'The Killer', img: 'Images/Killers/TheKiller.png', desc: 'An amateur killer inspired by the urban legend.' },
+            { id: 'hidden', name: 'The Hidden', img: 'Images/Killers/TheHidden.png', desc: 'Many test subjects were rendered insane.' },
+            { id: 'masked', name: 'The Masked', img: 'Images/Killers/TheMasked.png', desc: 'Attempts to gain the attention of 50 Blessings.' },
+            { id: 'abysswalker', name: 'The Abysswalker', img: 'Images/Killers/TheAbysswalker.png', desc: 'Once a great knight to a king, now consumed by the abyss.' },
+            { id: 'veil', name: 'The Veil', img: 'Images/Killers/TheVeil.png', desc: 'Her spirit lingers, pierced by spears.' },
         ];
 
-        // Placeholder - Add your actual survivor images to your folder
         const survivorLibrary = [
             { id: 'yuka', name: 'Yuka', img: 'Images/Survivor_Yuka.png', desc: 'Resourceful and determined.' },
-            { id: 'dwight', name: 'Dwight', img: 'Images/Survivor_Dwight.png', desc: 'A nervous leader.' },
-            // Add more survivors here
+            { id: 'lou', name: 'lou', img: 'Images/lou.png', desc: 'A nervous leader.' },
         ];
 
         const killerPerkLibrary = [
-            { id: 'terror', name: 'Terror Spread', img: 'Images/TerrorSpreadIcon.png', desc: 'Survivors suffer Winded status after repairing.' },
-            { id: 'piercing', name: 'Piercing Reverie', img: 'Images/PiercingReverieIcon.png', desc: 'Gain tokens to pause and regress generators.' },
-            { id: 'sloppy', name: 'Sloppy Mess', img: 'Images/SloppyMessIcon.png', desc: 'Bleed more, heal slower.' },
-            { id: 'echo', name: 'Echo Of The Void', img: 'Images/EchoOftheVoidIcon.png', desc: 'Loud noise notification on Line of Sight.' },
-            { id: 'abyssal', name: 'Abyssal Covenant', img: 'Images/AbyssalCovenantIcon.png', desc: 'Chance for generator to break at 50%.' },
-            { id: 'blood', name: 'Blood Between Worlds', img: 'Images/BloodBetweenWorldsIcon.png', desc: 'Damage survivor to regress random generator.' },
-            { id: 'brutal', name: 'Brutal Strength', img: 'Images/BrutalStrengthIcon.png', desc: 'Break pallets and gens faster.' },
-            { id: 'combo', name: 'Combo Streak', img: 'Images/ComboStreakIcon.png', desc: 'Speed boost after basic attack.' },
-            { id: 'corrupted', name: 'Corrupted Path', img: 'Images/CorruptedPathIcon.png', desc: 'Spread corruption trails.' },
-            { id: 'crack', name: 'Crackdown', img: 'Images/CrackdownIcon.png', desc: 'Increase gen damage.' },
-            { id: 'location', name: 'Echo Location', img: 'Images/EchoLocationIcon.png', desc: 'Reveal survivors after breaking gen.' },
-            { id: 'enhanced', name: 'Enhanced Senses', img: 'Images/EnhancedSensesIcon.png', desc: 'See aura on rushed actions.' },
-            { id: 'eternal', name: 'Eternal Torment', img: 'Images/EternalTormentIcon.png', desc: 'Survivors become vulnerable after stunning you.' },
-            { id: 'excitement', name: 'Excitement', img: 'Images/ExcitementIcon.png', desc: 'Speed boost but increased terror radius.' },
-            { id: 'hard', name: 'Hard Swing', img: 'Images/HardSwingIcon.png', desc: 'Apply Winded status on hit.' },
-            { id: 'next', name: 'Next In Line', img: 'Images/NextInLineIcon.png', desc: 'Reveal farthest survivor on down.' },
-            { id: 'offscreen', name: 'Offscreen Scare', img: 'Images/OffscreenScareIcon.png', desc: 'Speed boost when not in chase.' },
-            { id: 'play', name: 'Play With Your Food', img: 'Images/PlayWithYourFoodIcon.png', desc: 'Gain tokens for speed by letting obsession escape.' },
-            { id: 'predator', name: 'Predator', img: 'Images/PredatorIcon.png', desc: 'See aura if survivor escapes chase.' },
-            { id: 'resentment', name: 'Resentment Clinger', img: 'Images/ResentmentClingerIcon.png', desc: 'Lunge increase based on tokens.' },
-            { id: 'shadow', name: 'Shadow Trace', img: 'Images/ShadowTraceIcon.png', desc: 'Hide intent radius at start.' }
+            { id: 'terror', name: 'Terror Spread', img: 'Images/KillerPerks/TerrorSpreadIcon.png', desc: 'Survivors suffer Winded status after repairing.' },
+            { id: 'piercing', name: 'Piercing Reverie', img: 'Images/KillerPerks/PiercingReverieIcon.png', desc: 'Gain tokens to pause and regress generators.' },
+            { id: 'sloppy', name: 'Sloppy Mess', img: 'Images/KillerPerks/SloppyMessIcon.png', desc: 'Bleed more, heal slower.' },
+            { id: 'echo', name: 'Echo Of The Void', img: 'Images/KillerPerks/EchoOftheVoidIcon.png', desc: 'Loud noise notification on Line of Sight.' },
+            { id: 'abyssal', name: 'Abyssal Covenant', img: 'Images/KillerPerks/AbyssalCovenantIcon.png', desc: 'Chance for generator to break at 50%.' },
+            { id: 'blood', name: 'Blood Between Worlds', img: 'Images/KillerPerks/BloodBetweenWorldsIcon.png', desc: 'Damage survivor to regress random generator.' },
+            { id: 'brutal', name: 'Brutal Strength', img: 'Images/KillerPerks/BrutalStrengthIcon.png', desc: 'Break pallets and gens faster.' },
+            { id: 'combo', name: 'Combo Streak', img: 'Images/KillerPerks/ComboStreakIcon.png', desc: 'Speed boost after basic attack.' },
+            { id: 'corrupted', name: 'Corrupted Path', img: 'Images/KillerPerks/CorruptedPathIcon.png', desc: 'Spread corruption trails.' },
+            { id: 'crack', name: 'Crackdown', img: 'Images/KillerPerks/CrackdownIcon.png', desc: 'Increase gen damage.' },
+            { id: 'location', name: 'Echo Location', img: 'Images/KillerPerks/EchoLocationIcon.png', desc: 'Reveal survivors after breaking gen.' },
+            { id: 'enhanced', name: 'Enhanced Senses', img: 'Images/KillerPerks/EnhancedSensesIcon.png', desc: 'See aura on rushed actions.' },
+            { id: 'eternal', name: 'Eternal Torment', img: 'Images/KillerPerks/EternalTormentIcon.png', desc: 'Survivors become vulnerable after stunning you.' },
+            { id: 'excitement', name: 'Excitement', img: 'Images/KillerPerks/ExcitementIcon.png', desc: 'Speed boost but increased terror radius.' },
+            { id: 'hard', name: 'Hard Swing', img: 'Images/KillerPerks/HardSwingIcon.png', desc: 'Apply Winded status on hit.' },
+            { id: 'next', name: 'Next In Line', img: 'Images/KillerPerks/NextInLineIcon.png', desc: 'Reveal farthest survivor on down.' },
+            { id: 'offscreen', name: 'Offscreen Scare', img: 'Images/KillerPerks/OffscreenScareIcon.png', desc: 'Speed boost when not in chase.' },
+            { id: 'play', name: 'Play With Your Food', img: 'Images/KillerPerks/PlayWithYourFoodIcon.png', desc: 'Gain tokens for speed by letting obsession escape.' },
+            { id: 'predator', name: 'Predator', img: 'Images/KillerPerks/PredatorIcon.png', desc: 'See aura if survivor escapes chase.' },
+            { id: 'resentment', name: 'Resentment Clinger', img: 'Images/KillerPerks/ResentmentClingerIcon.png', desc: 'Lunge increase based on tokens.' },
+            { id: 'shadow', name: 'Shadow Trace', img: 'Images/KillerPerks/ShadowTraceIcon.png', desc: 'Hide intent radius at start.' }
         ];
 
         const survivorPerkLibrary = [
-            { id: 'born', name: 'Born In Blood', img: 'SurvivorPerks/BornInBloodIcon.png', desc: 'Hardened by a rough past.' },
-            { id: 'call', name: 'Call Me Back', img: 'SurvivorPerks/CallMeBackIcon.png', desc: 'Communication is key.' },
-            { id: 'desperate', name: 'Desperate', img: 'SurvivorPerks/DesperateIcon.png', desc: 'Works harder when injured.' },
-            { id: 'enhancedtouch', name: 'Enhanced Touch', img: 'SurvivorPerks/EnchancedTouchIcon.png', desc: 'Great skill checks are easier.' },
-            { id: 'expensive', name: 'Expensive Decor', img: 'SurvivorPerks/ExpensiveDecorIcon.png', desc: 'Distraction technique.' },
-            { id: 'flow', name: 'Flow State', img: 'SurvivorPerks/FlowStateIcon.png', desc: 'Faster vaulting in chase.' },
-            { id: 'grab', name: 'Grab My Hand', img: 'SurvivorPerks/GrabMyHand.png', desc: 'Heal others faster.' },
-            { id: 'collapse', name: 'Great Collapse', img: 'SurvivorPerks/GreatCollapseIcon.png', desc: 'Last ditch effort.' },
-            { id: 'group', name: 'Group Project', img: 'SurvivorPerks/GroupProject.png', desc: 'Better coop repair speed.' },
-            { id: 'heads', name: 'Heads Up', img: 'SurvivorPerks/HeadsUpIcon.png', desc: 'See killer aura occasionally.' },
-            { id: 'karma', name: 'High Karma', img: 'SurvivorPerks/HighKarma.png', desc: 'Luck increases.' },
-            { id: 'workout', name: 'Intense Workout', img: 'SurvivorPerks/IntenseWorkoutIcon.png', desc: 'Exhaustion recovers faster.' },
-            { id: 'tranquility', name: 'Iron Tranquility', img: 'SurvivorPerks/IronTranquilityIcon.png', desc: 'Silent while injured.' },
-            { id: 'laststand', name: 'Last Stand', img: 'SurvivorPerks/LastStandIcon.png', desc: 'Pick yourself up once.' },
-            { id: 'leftbehind', name: 'Left Behind', img: 'SurvivorPerks/LeftBehind.png', desc: 'See hatch aura.' },
-            { id: 'nobody', name: 'Nobody Left Behind', img: 'SurvivorPerks/NobodyLeftBehindIcon.png', desc: 'Altruism boost at endgame.' },
-            { id: 'own', name: 'On My Own', img: 'SurvivorPerks/OnMyOwn.png', desc: 'Repair faster when alone.' },
-            { id: 'pacifist', name: 'Pacifist', img: 'SurvivorPerks/Pacifist.png', desc: 'Cannot attack, but hide better.' },
-            { id: 'landing', name: 'Perfect Landing', img: 'SurvivorPerks/PerfectLandingIcon.png', desc: 'No stagger from falls.' },
-            { id: 'second', name: 'Second Wind', img: 'SurvivorPerks/SecondWindIcon.png', desc: 'Auto heal after unhook.' },
-            { id: 'snake', name: 'Snake Step', img: 'SurvivorPerks/SnakeStepIcon.png', desc: 'No scratch marks.' },
-            { id: 'grow', name: 'Time To Grow Up', img: 'SurvivorPerks/TimeToGrowUpIcon.png', desc: 'Gain experience faster.' },
-            { id: 'stronger', name: 'We Are Stronger Together', img: 'SurvivorPerks/We\'reStrongerTogether.png', desc: 'See ally auras.' }
+            { id: 'born', name: 'Born In Blood', img: 'Images/SurvivorPerks/BornInBloodIcon.png', desc: 'The ability of bonding with other people in traumatic experiences became easier for you. When you heal another survivor, you both gain a 30/40/50% speed boost for 6 seconds.' },
+            { id: 'call', name: 'Call Me Back', img: 'Images/SurvivorPerks/CallMeBackIcon.png', desc: 'After a player you healed gets hit you can see their aura for 20/30/40 seconds.' },
+            { id: 'desperate', name: 'Desperate', img: 'Images/SurvivorPerks/DesperateIcon.png', desc: 'Desperate times create desperate measures. When being carried, instantly add 10/15/20% to the Wiggle meter.' },
+            { id: 'enhancedtouch', name: 'Enchanced Touch', img: 'Images/SurvivorPerks/EnchancedTouchIcon.png', desc: 'Players you heal get a 10% heal, repair and speed boost for 10/15/20 seconds.' },
+            { id: 'expensive', name: 'Expensive Decor', img: 'Images/SurvivorPerks/ExpensiveDecorIcon.png', desc: 'At the beginning of the round you get a 40/50/50% healing boost but its gets lower by 10/10/5% each time you get spiked to a maximum of 80/80/90%.' },
+            { id: 'flow', name: 'Flowstate', img: 'Images/SurvivorPerks/FlowStateIcon.png', desc: 'hen landing a fast vault Flowstate activates: Increase your vaulting speed for a fast vault by 20% doing a new faster vaulting animation. Flowstate goes on cooldown for 70/60/50 seconds after performing a fast vault. ' },
+            { id: 'grab', name: 'Grab My Hand', img: 'Images/SurvivorPerks/GrabMyHand.png', desc: 'Unhooking a survivor fills their healing bar by 30/40/50%.' },
+            { id: 'collapse', name: 'Great Collapse', img: 'Images/SurvivorPerks/GreatCollapseIcon.png', desc: 'Stunning the killer gives you a 20/30/30% movement speed boost for 2/2/3 seconds.' },
+            { id: 'group', name: 'Group Project', img: 'Images/SurvivorPerks/GroupProject.png', desc: 'Increase repair speed by stackable 3/4/5% per survivor whos repairing with you up to a maximum of 9/12/15%.' },
+            { id: 'heads', name: 'Heads Up', img: 'Images/SurvivorPerks/HeadsUpIcon.png', desc: 'When the Killer gets within 40 studs of you, get an auditory warning and a 10/15/20% speed boost for 3 seconds then gain the Winded debuff for 60 seconds.' },
+            { id: 'karma', name: 'High Karma', img: 'Images/SurvivorPerks/HighKarma.png', desc: 'After saving a teammate this perk activates: Allows you to free yourself on your first spike stage but applies Anti-Heal for 90/75/60 seconds.' },
+            { id: 'workout', name: 'Intense Workout', img: 'Images/SurvivorPerks/IntenseWorkoutIcon.png', desc: 'Increase the speed which you save people from spikes by 10/20/30%.' },
+            { id: 'tranquility', name: 'Iron Tranquility', img: 'Images/SurvivorPerks/IronTranquilityIcon.png', desc: 'Your willpower transcends torment. While you are spiked, your aura is hidden from the killer. And your pools of blood despawn 3/4/5 faster.' },
+            { id: 'laststand', name: 'Last Stand', img: 'Images/SurvivorPerks/LastStandIcon.png', desc: 'When you are the last one standing: you heal up by a soul state and see the aura of the killer for 10/15/20 seconds.' },
+            { id: 'leftbehind', name: 'Left Behind', img: 'Images/SurvivorPerks/LeftBehind.png', desc: 'When one of your teammates leaves through the escape gates, gain permanent 5/6/7% speed boost.' },
+            { id: 'nobody', name: 'Nobody Left Behind', img: 'Images/SurvivorPerks/NobodyLeftBehindIcon.png', desc: 'When the escape gates are powered, gain 30/70/100% Healing Efficiency.' },
+            { id: 'own', name: 'On My Own', img: 'Images/SurvivorPerks/OnMyOwn.png', desc: 'Once you are alone this perks activates: Allows you to open gates 40/50/60% faster. You can see the Killers aura for 5 seconds.' },
+            { id: 'pacifist', name: 'Pacifist', img: 'Images//Pacifist.png', desc: 'Healing Effiency increased by 5/10/15%, generator repair speed reduced by 5%.' },
+            { id: 'landing', name: 'Perfect Landing', img: 'Images/SurvivorPerks/PerfectLandingIcon.png', desc: 'When Landing from great falls your recovery is sped up by 75% then grants you a 50% speed boost for 3 seconds. After usage of this perk suffer from the Winded status effect for 60/50/40 seconds.' },
+            { id: 'second', name: 'Second Wind', img: 'Images/SurvivorPerks/SecondWindIcon.png', desc: 'Being chased after and focused helped you adapt to ease the pressure. Upon being recused from the spikes, you gain an invincibility boost of 15/20/25 second.' },
+            { id: 'snake', name: 'Snake Step', img: 'Images/SurvivorPerks/SnakeStepIcon.png', desc: 'Your past life as a burglar has proven to be more helpful than you think, while crouched get a 60/70/80% speed boost.' },
+            { id: 'grow', name: 'Time To Grow Up', img: 'Images/SurvivorPerks/TimeToGrowUpIcon.png', desc: 'After being hit by the Killer, extend your speed boost for 1/2/3 seconds.' },
+            { id: 'stronger', name: 'We Are Stronger Together', img: 'Images/SurvivorPerks/We\'reStrongerTogether.png', desc: 'Staying in vicinity of a teammate will give you both a 2/4/6% speed boost.' }
         ];
 
-        // --- STATE MANAGEMENT ---
-
-        let editMode = 'killer'; // 'killer' or 'survivor'
+        let editMode = 'killer'; 
         
-        // Data Structures
+ 
         let killerBuild = {
             character: killerLibrary[0],
-            perks: [null, null, null] // 3 Slots
+            perks: [null, null, null] 
         };
 
         let survivorBuild = {
             character: survivorLibrary[0] || { name: "Survivor", img: "", desc: "" },
-            perks: [null, null, null, null] // 4 Slots
+            perks: [null, null, null, null] 
         };
 
         let activeSlotIndex = null; 
 
-        // --- FIRESTORE LISTENERS ---
 
         db.collection("builds").doc("mainBuild").onSnapshot((doc) => {
             if (doc.exists) {
                 const data = doc.data();
                 
-                // Load Killer Data
                 if(data.killer) killerBuild.character = data.killer;
                 if(data.loadout) killerBuild.perks = data.loadout;
-                // Backwards compatibility check: If strictly using new structure
+                
                 if(data.killerBuild) killerBuild = data.killerBuild;
 
-                // Load Survivor Data
                 if(data.survivorBuild) survivorBuild = data.survivorBuild;
 
                 initGridUI();
                 
-                // If modal is open, refresh it
                 if(document.getElementById('buildModal').classList.contains('active')) {
                     updateModalUI();
                 }
@@ -614,11 +603,11 @@
         });
 
         function saveData() {
-            // Save everything to the same document
+
             db.collection("builds").doc("mainBuild").set({
                 killerBuild: killerBuild,
                 survivorBuild: survivorBuild,
-                // Keep these for legacy/backup if needed, or update them to match killerBuild
+
                 killer: killerBuild.character,
                 loadout: killerBuild.perks
             }, { merge: true })
@@ -626,16 +615,14 @@
             .catch((error) => { alert("Error saving: " + error); });
         }
 
-        // --- UI FUNCTIONS ---
 
         function initGridUI() {
-            // Killer Card
+
             const kImg = document.getElementById('grid-killer-img');
             const kTitle = document.getElementById('grid-killer-title');
             if(kImg && killerBuild.character.img) kImg.src = killerBuild.character.img;
             if(kTitle) kTitle.innerText = killerBuild.character.name;
 
-            // Survivor Card
             const sImg = document.getElementById('grid-survivor-img');
             const sTitle = document.getElementById('grid-survivor-title');
             if(sImg && survivorBuild.character.img) sImg.src = survivorBuild.character.img;
@@ -644,14 +631,14 @@
 
         function openBuild(mode) {
             editMode = mode;
-            generateHexSlots(); // Create 3 or 4 slots based on mode
+            generateHexSlots(); 
             updateModalUI();
             toggleModal(true);
         }
 
         function generateHexSlots() {
             const container = document.getElementById('hexContainer');
-            container.innerHTML = ''; // Clear existing
+            container.innerHTML = ''; 
             
             const perks = (editMode === 'killer') ? killerBuild.perks : survivorBuild.perks;
             
@@ -667,18 +654,18 @@
         function updateModalUI() {
             const currentBuild = (editMode === 'killer') ? killerBuild : survivorBuild;
             
-            // Character Info
+
             document.getElementById('modalTitle').innerText = currentBuild.character.name;
             document.getElementById('modalImg').src = currentBuild.character.img;
             document.getElementById('modalDesc').innerText = currentBuild.character.desc;
 
-            // Perks Info
+
             const detailsContainer = document.getElementById('perkDetails');
             detailsContainer.innerHTML = ''; 
             
             currentBuild.perks.forEach((perk, index) => {
                 const slotImg = document.getElementById(`slot-${index}-img`);
-                if(!slotImg) return; // Guard clause
+                if(!slotImg) return; 
                 
                 const slotDiv = slotImg.parentElement;
                 
@@ -718,7 +705,6 @@
                 title.innerText = "Choose Perk";
                 libraryToUse = (editMode === 'killer') ? killerPerkLibrary : survivorPerkLibrary;
                 
-                // Show unequip button if a perk is currently equipped in this slot
                 const currentPerks = (editMode === 'killer') ? killerBuild.perks : survivorBuild.perks;
                 unequipBtn.style.display = (currentPerks[activeSlotIndex] !== null) ? 'block' : 'none';
             }
@@ -728,7 +714,7 @@
                 div.className = 'select-option';
                 div.onclick = () => selectItem(type, item);
                 div.innerHTML = `<img src="${item.img}">`;
-                // Optional: Add tooltip title="item.name"
+                
                 grid.appendChild(div);
             });
             
@@ -744,14 +730,13 @@
                 else survivorBuild.perks[activeSlotIndex] = itemObj;
             }
 
-            // If changing character, update immediate modal view
             if(type === 'character') {
                 updateModalUI();
-                initGridUI(); // Update background card
+                initGridUI(); 
             }
 
             saveData(); 
-            updateModalUI(); // Refresh perks view
+            updateModalUI(); 
             closeSelector();
         }
 
