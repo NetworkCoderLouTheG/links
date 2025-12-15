@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Server Rules</title>
+    
+    <style>
+        @font-face {
+            font-family: 'Cleanow';
+            src: url('Cleanow.ttf') format('truetype');
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Cleanow', sans-serif;
+            background: #e0d6cd;
+            color: #181818;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 16px;
+            border-top: 5px solid #8f2f2f;
+        }
+
+        .card {
+            margin: auto;
+            position: relative;
+            background: #ddd8d3;
+            width: 100%;
+            max-width: 800px;
+            border-radius: 18px;
+            padding: 26px 22px 30px;
+            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.16);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: url("Images/sd_logo.png") center/140% no-repeat;
+            opacity: 0.30;
+            filter: blur(2px);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .card > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .header-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            padding-bottom: 15px;
+        }
+
+        .page-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-align: right;
+        }
+
+        .back-btn {
+            text-decoration: none;
+            color: #181818;
+            font-weight: 600;
+            border: 1px solid #181818;
+            padding: 8px 14px;
+            border-radius: 99px;
+            transition: 0.2s;
+        }
+
+        .back-btn:hover {
+            background: #181818;
+            color: #f5ece4;
+        }
+
+        /* --- RULES SPECIFIC STYLES --- */
+        .rules-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .rule-item {
+            background: rgba(255, 255, 255, 0.4);
+            padding: 15px;
+            border-radius: 12px;
+            border-left: 4px solid #8f2f2f; /* Accent color */
+        }
+
+        .rule-item h3 {
+            font-size: 1.2rem;
+            margin-bottom: 5px;
+            color: #8f2f2f;
+        }
+
+        .rule-item p {
+            font-size: 0.95rem;
+            color: #4a4139;
+            line-height: 1.4;
+        }
+
+        /* Number badge style */
+        .rule-number {
+            display: inline-block;
+            background: #181818;
+            color: #f5ece4;
+            font-size: 0.8rem;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <div class="header-nav">
+            <a href="index.html" class="back-btn">← Back</a>
+            <div class="page-title">server rules</div>
+        </div>
+
+        <div class="rules-container">
+            
+            <div class="rule-item">
+                <h3><span class="rule-number">01</span> Respect Everyone</h3>
+                <p>Treat all members with respect. Harassment, hate speech, or toxicity will not be tolerated. We want a chill environment for everyone.</p>
+            </div>
+
+            <div class="rule-item">
+                <h3><span class="rule-number">02</span> No Exploiting</h3>
+                <p>Using scripts, glitches, or any form of external software to gain an unfair advantage is strictly prohibited and will result in a ban.</p>
+            </div>
+
+            <div class="rule-item">
+                <h3><span class="rule-number">03</span> Follow Roblox ToS</h3>
+                <p>You must adhere to the official Roblox Terms of Service and Community Standards at all times within the private server.</p>
+            </div>
+
+            <div class="rule-item">
+                <h3><span class="rule-number">04</span> Listen to Admins</h3>
+                <p>If an Admin or Moderator gives you a warning or instruction, please follow it. Arguing may lead to a kick or mute.</p>
+            </div>
+
+            <div class="rule-item">
+                <h3><span class="rule-number">05</span> No Advertising</h3>
+                <p>Do not advertise other servers, groups, or external links without explicit permission from the owner.</p>
+            </div>
+
+        </div>
+    </div>
+
+</body>
+</html>

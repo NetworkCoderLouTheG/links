@@ -138,7 +138,6 @@
             margin-bottom: 10px;
         }
 
-        /* UPDATED: Added object-position to shift image downwards/focus on top */
         .build-img-wrap img {
             width: 100%;
             height: 100%;
@@ -321,7 +320,6 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            /* Scale up to maximize space inside the hexagon */
             transform: scale(1.8); 
             clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
             display: none;
@@ -345,7 +343,6 @@
             overflow: hidden;
         }
 
-        /* VERTICAL SEPARATOR LINE */
         .item-slot::before {
             content: "";
             position: absolute;
@@ -370,11 +367,9 @@
             object-fit: cover;
             border-radius: 6px;
             display: none;
-            /* Scale up slightly to fit better */
             transform: scale(1.25);
         }
 
-        /* PLUS SIGN FOR BOTH */
         .hex-slot::after, .item-slot::after {
             content: "+";
             color: #666;
@@ -395,7 +390,7 @@
         /* --- KILLER POWER SECTION --- */
         .killer-powers-wrapper {
             margin: 10px 0 20px 0;
-            display: none; /* Hidden by default */
+            display: none;
             flex-direction: column;
             gap: 10px;
         }
@@ -456,10 +451,17 @@
             padding: 10px;
         }
 
+        /* --- MODIFIED CSS FOR SCALING --- */
         .perk-detail-item img {
             width: 40px;
             height: 40px;
             object-fit: contain;
+            transform: scale(1.5); /* Base Scale */
+        }
+
+        /* Secondary Scale for Killer Perks */
+        .perk-detail-item img.killer-perk-img {
+            transform: scale(2.5);
         }
 
         .perk-text h4 {
@@ -536,7 +538,6 @@
             background: #2a2a2a;
             margin-bottom: 8px;
             transition: 0.2s;
-            /* Scale up to maximize space inside the hexagon selector */
             transform: scale(1.25); 
         }
         
@@ -998,12 +999,15 @@
                 
                 const slotDiv = slotImg.parentElement;
                 
+                // --- ADDED: Check if we are in killer mode to apply the special class ---
+                const extraClass = (editMode === 'killer') ? 'killer-perk-img' : '';
+
                 if (perk) {
                     slotImg.src = perk.img; 
                     slotDiv.classList.add('filled');
                     detailsContainer.insertAdjacentHTML('beforeend', `
                         <div class="perk-detail-item">
-                            <img src="${perk.img}">
+                            <img src="${perk.img}" class="${extraClass}">
                             <div class="perk-text">
                                 <h4>${perk.name}</h4>
                                 <p>${perk.desc}</p>
