@@ -62,7 +62,6 @@
             height: 50px;
             z-index: 10;   /* Sits above background */
             cursor: default; /* Keeps mouse cursor normal to avoid suspicion */
-            /* background: rgba(255, 0, 0, 0.2);  Uncomment this line to see the box for testing */
         }
 
         .avatar-wrap {
@@ -80,7 +79,6 @@
             overflow:hidden;
             border:2px solid rgba(0,0,0,0.25);
             background:#000; 
-            /* Pointer removed so it doesn't look interactive anymore */
             cursor: default; 
         }
         
@@ -183,10 +181,10 @@
             filter: drop-shadow(0 0 2px rgba(0, 0, 0, 0.55));
         }
 
-        /* Helper class for the round Roblox icon */
+        /* UPDATED: Removed the border property */
         .btn-icon.round-icon {
             border-radius: 50%;
-            border: 1px solid rgba(255,255,255,0.3);
+            /* border: 1px solid rgba(255,255,255,0.3);  <-- REMOVED */
         }
 
         @media (max-width: 600px) {
@@ -314,18 +312,18 @@
             </a>
 
             <a id="roblox-link-btn" href="https://www.roblox.com/users/2548263810/profile" class="btn" target="_blank">
-               <img id="roblox-link-icon" src="Images/RobloxAva.png" alt="Robloxicon" class="btn-icon round-icon">
-               <span>Roblox Profile Link</span>
+                <img id="roblox-link-icon" src="Images/RobloxAva.png" alt="Robloxicon" class="btn-icon round-icon">
+                <span>Roblox Profile Link</span>
             </a>
 
             <a href="viewer.html" class="btn-alt"> 
-               <img src="Images/VDicon.png" alt="VD icon" class="btn-icon">
-               <span>Builds</span>
+                <img src="Images/VDicon.png" alt="VD icon" class="btn-icon">
+                <span>Builds</span>
             </a>
 
             <a href="rules.html" class="btn" target="_blank">
-               <img src="Images/VDicon.png" alt="VD icon" class="btn-icon">
-               <span>Rules</span>
+                <img src="Images/VDicon.png" alt="VD icon" class="btn-icon">
+                <span>Rules</span>
             </a>
         </div>
     </div>
@@ -347,7 +345,6 @@
 
         // --- 2. ROBLOX DYNAMIC ICON LOGIC ---
         
-        // This function fetches a Headshot specifically (better for small icons)
         async function fetchRobloxHeadshot(userId) {
              const apiUrl = `https://thumbnails.roproxy.com/v1/users/avatar-headshot?userIds=${userId}&size=150x150&format=Png&isCircular=true`;
              try {
@@ -362,20 +359,17 @@
              return "Images/RobloxAva.png"; // Fallback image
         }
 
-        // Listen to the database to update the link and icon in real-time
         db.collection("builds").doc("mainBuild").onSnapshot((doc) => {
             if (doc.exists) {
                 const data = doc.data();
                 if (data.survivorBuild && data.survivorBuild.robloxId) {
                     const rId = data.survivorBuild.robloxId;
                     
-                    // 1. Update the Link HREF
                     const linkBtn = document.getElementById('roblox-link-btn');
                     if(linkBtn) {
                         linkBtn.href = `https://www.roblox.com/users/${rId}/profile`;
                     }
 
-                    // 2. Fetch and Update the Icon SRC
                     fetchRobloxHeadshot(rId).then(url => {
                         const iconImg = document.getElementById('roblox-link-icon');
                         if(iconImg && url) {
@@ -386,7 +380,7 @@
             }
         });
 
-        // --- 3. LOGIN & PASSWORD LOGIC (Keep existing) ---
+        // --- 3. LOGIN & PASSWORD LOGIC ---
         const SECRET_CODE = "yuka123"; 
 
         let clickCount = 0;
