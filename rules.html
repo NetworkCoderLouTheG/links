@@ -25,7 +25,7 @@
             display: flex;
             justify-content: center;
             align-items: flex-start;
-            padding: 30px 16px;
+            padding: 20px 12px;
             border-top: 6px solid #8f2f2f;
         }
 
@@ -36,18 +36,19 @@
             width: 100%;
             max-width: 850px;
             border-radius: 22px;
-            padding: 40px 35px;
+            padding: 30px 20px;
             box-shadow: 0 20px 50px rgba(0, 0, 0, 0.18);
             display: flex;
             flex-direction: column;
+            overflow: hidden;
         }
 
         .card::before {
             content: "";
             position: absolute;
             inset: 0;
-            background: url("Images/sd_logo.png") center/120% no-repeat;
-            opacity: 0.25;
+            background: url("Images/sd_logo.png") center/contain no-repeat;
+            opacity: 0.20;
             filter: blur(1px);
             z-index: 0;
             pointer-events: none;
@@ -62,13 +63,13 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 35px;
+            margin-bottom: 25px;
             border-bottom: 2px solid rgba(143, 47, 47, 0.2);
-            padding-bottom: 20px;
+            padding-bottom: 15px;
         }
 
         .page-title {
-            font-size: 2.2rem;
+            font-size: clamp(1.4rem, 5vw, 2.2rem);
             font-weight: 700;
             text-align: right;
             color: #8f2f2f;
@@ -80,70 +81,56 @@
             color: #181818;
             font-weight: 600;
             border: 2px solid #181818;
-            padding: 10px 20px;
+            padding: 8px 16px;
             border-radius: 99px;
             transition: 0.3s ease;
-            font-size: 1rem;
-        }
-
-        .back-btn:hover {
-            background: #181818;
-            color: #f5ece4;
+            font-size: 0.9rem;
+            white-space: nowrap;
         }
 
         .rules-container {
             display: flex;
             flex-direction: column;
-            gap: 25px; /* Increased spacing between sections */
+            gap: 20px;
         }
 
         .rule-item {
-            background: rgba(255, 255, 255, 0.55);
-            padding: 25px; /* More internal padding */
+            background: rgba(255, 255, 255, 0.6);
+            padding: 25px 20px;
             border-radius: 15px;
-            border-left: 6px solid #8f2f2f;
+            border-bottom: 4px solid #8f2f2f; /* Changed from left-border to bottom for centered look */
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            text-align: center; /* Center alignment */
         }
 
         .rule-item h3 {
-            font-size: 1.4rem; /* Increased heading size */
+            font-size: 1.4rem;
             margin-bottom: 15px;
             color: #8f2f2f;
             text-transform: uppercase;
-            letter-spacing: 1.5px;
+            letter-spacing: 2px;
         }
 
         .rule-list {
             list-style: none;
-            padding-left: 10px;
         }
 
         .rule-list li {
-            font-size: 1.15rem; /* Increased body font size */
+            font-size: 1.1rem;
             color: #2e2823;
-            line-height: 1.8; /* Better spacing between lines */
-            margin-bottom: 12px;
-            display: flex;
-            align-items: flex-start;
+            line-height: 1.6;
+            margin-bottom: 14px;
+            display: block; /* Removed flex for clean centering */
         }
 
-        .rule-list li:last-child {
-            margin-bottom: 0;
-        }
-
-        .rule-list li::before {
-            content: "•";
-            color: #8f2f2f;
-            font-weight: bold;
-            font-size: 1.4rem;
+        .rule-text {
             display: inline-block;
-            width: 1.2em;
-            margin-top: -2px;
+            width: 100%;
         }
 
         .footer-note {
-            margin-top: 40px;
-            padding: 25px;
+            margin-top: 30px;
+            padding: 20px;
             background: rgba(143, 47, 47, 0.05);
             border-radius: 12px;
             text-align: center;
@@ -151,22 +138,32 @@
 
         .elimination-msg {
             font-weight: bold;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             color: #8f2f2f;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
             display: block;
         }
 
         .final-statement {
-            font-size: 1.05rem;
+            font-size: 1rem;
             color: #181818;
-            line-height: 1.5;
+            line-height: 1.4;
         }
 
         b {
-            color: #8f2f2f; /* Highlighted text color matches theme */
+            color: #8f2f2f;
+            /* Allow wrapping on small screens but keep the color bold */
         }
 
+        @media (max-width: 480px) {
+            .rule-list li {
+                font-size: 1.05rem;
+                margin-bottom: 18px; /* More space between rules on mobile */
+            }
+            .rule-item {
+                padding: 20px 15px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -182,25 +179,25 @@
             <div class="rule-item">
                 <h3>General Rules</h3>
                 <ul class="rule-list">
-                    <li>No cheating = <b>Blocked/Banned if caught</b></li>
-                    <li>No exploiting = <b>Blocked/Banned if caught</b></li>
-                    <li>No third-party apps (Game scripts/Tools) = <b>Blocked/Banned if caught</b></li>
+                    <li><span class="rule-text">No cheating = <b>Blocked/Banned if caught</b></span></li>
+                    <li><span class="rule-text">No exploiting = <b>Blocked/Banned if caught</b></span></li>
+                    <li><span class="rule-text">No third-party apps (Game scripts/Tools) = <b>Blocked/Banned if caught</b></span></li>
                 </ul>
             </div>
 
             <div class="rule-item">
                 <h3>Survivor Rules</h3>
                 <ul class="rule-list">
-                    <li>Get killed = <b>Eliminated</b></li>
-                    <li>Didn’t escape = <b>Eliminated</b></li>
+                    <li><span class="rule-text">Get killed = <b>Eliminated</b></span></li>
+                    <li><span class="rule-text">Didn’t escape = <b>Eliminated</b></span></li>
                 </ul>
             </div>
 
             <div class="rule-item">
                 <h3>Killer Rules</h3>
                 <ul class="rule-list">
-                    <li>No Slugging (not hooking downed survivors)</li>
-                    <li>No kill = <b>Eliminated</b></li>
+                    <li><span class="rule-text">No Slugging (not hooking downed survivors)</span></li>
+                    <li><span class="rule-text">No kill = <b>Eliminated</b></span></li>
                 </ul>
             </div>
 
