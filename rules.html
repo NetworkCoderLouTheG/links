@@ -25,8 +25,8 @@
             display: flex;
             justify-content: center;
             align-items: flex-start;
-            padding: 16px;
-            border-top: 5px solid #8f2f2f;
+            padding: 30px 16px;
+            border-top: 6px solid #8f2f2f;
         }
 
         .card {
@@ -34,10 +34,10 @@
             position: relative;
             background: #ddd8d3;
             width: 100%;
-            max-width: 800px;
-            border-radius: 18px;
-            padding: 26px 22px 30px;
-            box-shadow: 0 18px 40px rgba(0, 0, 0, 0.16);
+            max-width: 850px;
+            border-radius: 22px;
+            padding: 40px 35px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.18);
             display: flex;
             flex-direction: column;
         }
@@ -46,9 +46,9 @@
             content: "";
             position: absolute;
             inset: 0;
-            background: url("Images/sd_logo.png") center/140% no-repeat;
-            opacity: 0.30;
-            filter: blur(2px);
+            background: url("Images/sd_logo.png") center/120% no-repeat;
+            opacity: 0.25;
+            filter: blur(1px);
             z-index: 0;
             pointer-events: none;
         }
@@ -62,25 +62,28 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 25px;
-            border-bottom: 1px solid rgba(0,0,0,0.1);
-            padding-bottom: 15px;
+            margin-bottom: 35px;
+            border-bottom: 2px solid rgba(143, 47, 47, 0.2);
+            padding-bottom: 20px;
         }
 
         .page-title {
-            font-size: 1.8rem;
+            font-size: 2.2rem;
             font-weight: 700;
             text-align: right;
+            color: #8f2f2f;
+            text-transform: uppercase;
         }
 
         .back-btn {
             text-decoration: none;
             color: #181818;
             font-weight: 600;
-            border: 1px solid #181818;
-            padding: 8px 14px;
+            border: 2px solid #181818;
+            padding: 10px 20px;
             border-radius: 99px;
-            transition: 0.2s;
+            transition: 0.3s ease;
+            font-size: 1rem;
         }
 
         .back-btn:hover {
@@ -88,42 +91,80 @@
             color: #f5ece4;
         }
 
-        /* --- RULES SPECIFIC STYLES --- */
         .rules-container {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 25px; /* Increased spacing between sections */
         }
 
         .rule-item {
-            background: rgba(255, 255, 255, 0.4);
-            padding: 15px;
-            border-radius: 12px;
-            border-left: 4px solid #8f2f2f; /* Accent color */
+            background: rgba(255, 255, 255, 0.55);
+            padding: 25px; /* More internal padding */
+            border-radius: 15px;
+            border-left: 6px solid #8f2f2f;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         }
 
         .rule-item h3 {
-            font-size: 1.2rem;
-            margin-bottom: 5px;
+            font-size: 1.4rem; /* Increased heading size */
+            margin-bottom: 15px;
             color: #8f2f2f;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
         }
 
-        .rule-item p {
-            font-size: 0.95rem;
-            color: #4a4139;
-            line-height: 1.4;
+        .rule-list {
+            list-style: none;
+            padding-left: 10px;
         }
 
-        /* Number badge style */
-        .rule-number {
+        .rule-list li {
+            font-size: 1.15rem; /* Increased body font size */
+            color: #2e2823;
+            line-height: 1.8; /* Better spacing between lines */
+            margin-bottom: 12px;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .rule-list li:last-child {
+            margin-bottom: 0;
+        }
+
+        .rule-list li::before {
+            content: "•";
+            color: #8f2f2f;
+            font-weight: bold;
+            font-size: 1.4rem;
             display: inline-block;
-            background: #181818;
-            color: #f5ece4;
-            font-size: 0.8rem;
-            padding: 2px 8px;
-            border-radius: 4px;
-            margin-right: 8px;
-            vertical-align: middle;
+            width: 1.2em;
+            margin-top: -2px;
+        }
+
+        .footer-note {
+            margin-top: 40px;
+            padding: 25px;
+            background: rgba(143, 47, 47, 0.05);
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .elimination-msg {
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: #8f2f2f;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .final-statement {
+            font-size: 1.05rem;
+            color: #181818;
+            line-height: 1.5;
+        }
+
+        b {
+            color: #8f2f2f; /* Highlighted text color matches theme */
         }
 
     </style>
@@ -133,36 +174,41 @@
     <div class="card">
         <div class="header-nav">
             <a href="index.html" class="back-btn">← Back</a>
-            <div class="page-title">server rules</div>
+            <div class="page-title">Server Rules</div>
         </div>
 
         <div class="rules-container">
             
             <div class="rule-item">
-                <h3><span class="rule-number">01</span> Respect Everyone</h3>
-                <p>Treat all members with respect. Harassment, hate speech, or toxicity will not be tolerated. We want a chill environment for everyone.</p>
+                <h3>General Rules</h3>
+                <ul class="rule-list">
+                    <li>No cheating = <b>Blocked/Banned if caught</b></li>
+                    <li>No exploiting = <b>Blocked/Banned if caught</b></li>
+                    <li>No third-party apps (Game scripts/Tools) = <b>Blocked/Banned if caught</b></li>
+                </ul>
             </div>
 
             <div class="rule-item">
-                <h3><span class="rule-number">02</span> No Exploiting</h3>
-                <p>Using scripts, glitches, or any form of external software to gain an unfair advantage is strictly prohibited and will result in a ban.</p>
+                <h3>Survivor Rules</h3>
+                <ul class="rule-list">
+                    <li>Get killed = <b>Eliminated</b></li>
+                    <li>Didn’t escape = <b>Eliminated</b></li>
+                </ul>
             </div>
 
             <div class="rule-item">
-                <h3><span class="rule-number">03</span> Follow Roblox ToS</h3>
-                <p>You must adhere to the official Roblox Terms of Service and Community Standards at all times within the private server.</p>
+                <h3>Killer Rules</h3>
+                <ul class="rule-list">
+                    <li>No Slugging (not hooking downed survivors)</li>
+                    <li>No kill = <b>Eliminated</b></li>
+                </ul>
             </div>
 
-            <div class="rule-item">
-                <h3><span class="rule-number">04</span> Listen to Admins</h3>
-                <p>If an Admin or Moderator gives you a warning or instruction, please follow it. Arguing may lead to a kick or mute.</p>
-            </div>
+        </div>
 
-            <div class="rule-item">
-                <h3><span class="rule-number">05</span> No Advertising</h3>
-                <p>Do not advertise other servers, groups, or external links without explicit permission from the owner.</p>
-            </div>
-
+        <div class="footer-note">
+            <span class="elimination-msg">Elimination only applies when there is a queue in line</span>
+            <p class="final-statement">These rules are essential for a fair gameplay and must be followed by all players at <b>ALL TIMES.</b></p>
         </div>
     </div>
 
